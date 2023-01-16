@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 PATH=~/Pictures/Scripts/:"$PATH"
+echo $PATH
 
 function main() {
   set -e
@@ -16,7 +17,7 @@ function main() {
   update-metadata "$newly_imported_photos"
   move-and-rename "$newly_imported_photos" "$new_photos"
   open-in-bridge "$new_photos"
-  erase-photos-from-card "$card"
+  # erase-photos-from-card "$card"
   unmount-card "$card"
 }
 
