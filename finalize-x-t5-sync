@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 
 PATH=~/Pictures/Scripts/:"$PATH"
-echo $PATH
 
 function main() {
   set -e
@@ -9,13 +8,14 @@ function main() {
   card="X-T5 #1"
   date=$( date +'%Y-%m-%d' )
   year=$( date +'%Y' )
+  photos=~/Pictures/Photographs
   new_photos=~/Pictures/Photographs/"$year/$date"
-  newly_imported_photos=~/Pictures/Photographs/Importing
+  newly_imported_photos="$photos"/Importing
 
   set -x
 
   update-metadata "$newly_imported_photos"
-  move-and-rename "$newly_imported_photos" "$new_photos"
+  move-and-rename "$newly_imported_photos" "$photos"
   open-in-bridge "$new_photos"
   # erase-photos-from-card "$card"
   unmount-card "$card"

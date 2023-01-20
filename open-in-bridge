@@ -4,6 +4,8 @@ function main() {
   bridge_app_name="Adobe Bridge 2023"
   photos="$1"
 
+  set -ex
+
   if pgrep "$bridge_app_name"; then
     osascript -e "quit app \"$bridge_app_name\""
     sleep 5

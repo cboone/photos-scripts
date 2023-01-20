@@ -11,9 +11,10 @@ function main() {
   set -ex
 
   exiftool \
-    -m \
+    -ignoreMinorErrors \
     -overwrite_original_in_place \
-    -P \
+    -preserve \
+    -verbose \
     -Artist="$name" \
     -Copyright="$name" \
     -Creator="$name" \
@@ -26,9 +27,10 @@ function main() {
 
   # shellcheck disable=2016
   exiftool \
-    -m \
+    -ignoreMinorErrors \
     -overwrite_original_in_place \
-    -P \
+    -preserve \
+    -verbose \
     -if 'not defined $Lens or $Lens eq ""' \
     -FocalLength='10' \
     -FocalLengthIn35mmFormat='15' \
