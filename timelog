@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+
+function iso8601 {
+  date +%Y-%m-%dT%H:%M:%S
+}
+
+function main {
+  set -eo pipefail
+
+  local -r name=$(basename "$1")
+  local -r log=~/Pictures/Scripts/logs/"${name}-$(iso8601)"
+
+  set -x
+
+  "$@" |& ts %H:%M:%.S > "$log" 2>&1
+}
+
+main "$1"

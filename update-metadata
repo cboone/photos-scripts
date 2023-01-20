@@ -1,12 +1,11 @@
 #!/usr/bin/env bash
 
-function main() {
-  directory="$1"
-  email="info@catamounthardware.com"
-  lens_info='Venus Optics Laowa 10mm f/4'
-  name='Christopher Boone'
-  terms='No reproduction rights are granted without the express written permission of Christopher Boone. No other usage is expressed or implied.'
-  url='https://catamounthardware.com'
+function update-copyright-metadata {
+  local -r directory="$1"
+  local -r email='info@catamounthardware.com'
+  local -r name='Christopher Boone'
+  local -r terms='No reproduction rights are granted without the express written permission of Christopher Boone. No other usage is expressed or implied.'
+  local -r url='https://catamounthardware.com'
 
   set -ex
 
@@ -24,6 +23,16 @@ function main() {
     -UsageTerms="$terms" \
     -WebStatement="$url" \
     "$directory"
+}
+
+function update-lens-metadata {
+  local -r directory="$1"
+  local -r lens_make='Venus Optics'
+  local -r lens_model='Laowa 10mm f/4'
+  local -r lens_info="$lens_make $lens_model"
+  local -r max_aperture='4'
+
+  set -ex
 
   # shellcheck disable=2016
   exiftool \
@@ -31,15 +40,18 @@ function main() {
     -overwrite_original_in_place \
     -preserve \
     -verbose \
-    -if 'not defined $Lens or $Lens eq ""' \
-    -FocalLength='10' \
-    -FocalLengthIn35mmFormat='15' \
-    -Lens="$lens_info" \
-    -LensMake='Venus Optics Laowa' \
-    -LensModel="$lens_info" \
-    -LensType="$lens_info" \
-    -MaxApertureValue='4' \
+    -if 'not defined $LensMake or $LensMake eq ""' \
+    -LensID="$lens_info" \
+    -LensInfo="$lens_info" \
+    -LensMake="$lens_make" \
+    -LensModel="$lens_model" \
+    -MaxApertureValue="$max_aperture" \
     "$directory"
+}
+
+function main {
+  update-copyright-metadata "$1"
+  update-lens-metadata "$1"
 }
 
 main "$1"

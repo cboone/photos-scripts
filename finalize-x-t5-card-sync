@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+
+PATH=~/Pictures/Scripts/:"$PATH"
+
+function main {
+  set -e
+
+  local -r card="X-T5 #1"
+  local -r date=$( date +'%Y-%m-%d' )
+  local -r year=$( date +'%Y' )
+  local -r photos=~/Pictures/Photographs
+  local -r new_photos=~/Pictures/Photographs/"$year/$date"
+  local -r newly_imported_photos="$photos"/Importing
+
+  set -x
+
+  backup-imports
+  update-metadata "$newly_imported_photos"
+  move-and-rename "$newly_imported_photos" "$photos"
+  open-in-bridge "$new_photos"
+  # erase-photos-from-card "$card"
+  unmount-card "$card"
+}
+
+main

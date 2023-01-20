@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+
+function newest-log {
+  set -eo pipefail
+
+  local -r name=$(basename "$1")
+  find ~/Pictures/Scripts/logs/"${name}"* | tail -1
+}
+
+function main {
+  set -e
+
+  local -r name=$(basename "$1")
+  name=$(basename "$1")
+  less "$( newest-log "$name" )"
+}
+
+main "$1"

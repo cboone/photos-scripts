@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+
+function main {
+  set -e
+
+  local -r from_directory=~/Pictures/Photographs/Importing
+  local -r to_directory=~/Pictures/Photographs/'Import backups'
+
+  set -x
+
+  exiftool \
+    -ignoreMinorErrors \
+    -out . \
+    -verbose \
+    -dateFormat "$to_directory"/%Y/%Y-%m-%d \
+    '-Directory<DateTimeOriginal' \
+    "$from_directory"
+}
+
+main

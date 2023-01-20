@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+function main {
+  set -ex
+
+  timelog finalize-x-t5-card-sync
+}
+
+main

@@ -1,6 +1,8 @@
 #!/bin/bash
 
-function main() {
+function main {
+  set -ex
+
   diskutil unmount /Volumes/"$1"
 }
 

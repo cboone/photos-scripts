@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
-function main() {
-  from_directory="$1"
-  to_directory="$2"
+function main {
+  local -r from_directory="$1"
+  local -r to_directory="$2"
 
   set -ex
 
