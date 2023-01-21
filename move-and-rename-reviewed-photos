@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+
+function main {
+  local -r review_directory=~/Pictures/Photographs/'Ready for review'
+  local -r to_directory=~/Pictures/Photographs
+
+  set -x
+
+  # shellcheck disable=2016
+  exiftool \
+    -ignoreMinorErrors \
+    -verbose \
+    -dateFormat "$to_directory"/%Y/%Y-%m-%d/%Y%m%d-%%f.%%e \
+    '-filename<CreateDate'
+    "$review_directory/{}".{RAF,xmp}
+}
+
+main
