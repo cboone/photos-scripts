@@ -1,9 +1,5 @@
 #!/usr/bin/env bash
 
-function main {
-  set -ex
+PATH="/Users/hpg/Pictures/Scripts/:/opt/homebrew/bin:$PATH"
 
-  timelog finalize-x-t5-card-sync
-}
-
-main
+time-log finalize-x-t5-card-sync

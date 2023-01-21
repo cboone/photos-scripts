@@ -1,9 +1,0 @@
-#!/bin/bash
-
-function main {
-  set -ex
-
-  rm -fr /Volumes/"$1"/*
-}
-
-main "$1"

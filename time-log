@@ -5,14 +5,12 @@ function iso8601 {
 }
 
 function main {
-  set -eo pipefail
-
-  local -r name=$(basename "$1")
-  local -r log=~/Pictures/Scripts/logs/"${name}-$(iso8601)"
+  local -r log_name=$(basename "$1")
+  local -r log=/Users/hpg/Pictures/Scripts/logs/"${log_name}-$(iso8601)"
 
   set -x
 
   "$@" |& ts %H:%M:%.S > "$log" 2>&1
 }
 
-main "$1"
+main "$@"
