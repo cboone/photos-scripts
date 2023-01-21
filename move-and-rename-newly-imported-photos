@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
 function main {
+  local -r imports_directory=~/Pictures/Photographs/Importing
   local -r review_directory=~/Pictures/Photographs/'Ready for review'
-  local -r to_directory=~/Pictures/Photographs
 
   set -x
 
@@ -10,9 +10,9 @@ function main {
   exiftool \
     -ignoreMinorErrors \
     -verbose \
-    -dateFormat "$to_directory"/%Y/%Y-%m-%d/%Y%m%d-%%f.%%e \
-    '-filename<CreateDate'
-    "$review_directory/{}".{RAF,xmp}
+    -dateFormat "$review_directory"/%Y%m%d-%%f.%%e \
+    '-filename<CreateDate' \
+    "$imports_directory"
 }
 
 main

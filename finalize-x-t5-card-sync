@@ -7,17 +7,14 @@ function main {
 
   local -r card="X-T5 #1"
   local -r photos=~/Pictures/Photographs
-  local -r import_backups="$photos"/Originals
-  local -r newly_imported_photos="$photos"/Importing
   local -r photos_for_review="$photos/Ready for review"
 
   set -x
 
-  backup-imports "$newly_imported_photos" "$import_backups"
-  update-metadata "$newly_imported_photos"
-  move-and-rename "$newly_imported_photos" "$photos_for_review"
+  backup-new-imports
+  update-new-imports-metadata
+  move-and-rename-newly-imported-photos
   open-in-bridge "$photos_for_review"
-  # erase-photos-from-card "$card"
   unmount-card "$card"
 }
 

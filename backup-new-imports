@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+
+function main {
+  local -r photos=~/Pictures/Photographs
+  local -r originals="$photos"/Originals
+  local -r newly_imported_photos="$photos"/Importing
+
+  set -x
+
+  exiftool \
+    -ignoreMinorErrors \
+    -out . \
+    -verbose \
+    -dateFormat "$originals"/%Y/%Y-%m-%d \
+    '-Directory<DateTimeOriginal' \
+    "$newly_imported_photos"
+}
+
+main

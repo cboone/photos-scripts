@@ -7,11 +7,13 @@ function update-copyright-metadata {
   local -r terms='No reproduction rights are granted without the express written permission of Christopher Boone. No other usage is expressed or implied.'
   local -r url='https://catamounthardware.com'
 
+  # shellcheck disable=2016
   exiftool \
     -ignoreMinorErrors \
     -overwrite_original_in_place \
     -preserve \
     -verbose \
+    -if 'not defined $WebStatement or $WebStatement eq ""' \
     -Artist="$name" \
     -Copyright="$name" \
     -CreatorWorkEmail="$email" \
@@ -41,13 +43,16 @@ function update-lens-metadata {
     -LensModel="$lens_model" \
     -MaxApertureValue="$max_aperture" \
     "$directory"
-  # exiftool can exit with status 2 if no files match the filter
 }
 
 function main {
-  set -ex
-  update-copyright-metadata "$1"
-  update-lens-metadata "$1"
+  local -r photos=~/Pictures/Photographs
+  local -r newly_imported_photos="$photos"/Importing
+
+  set -x
+
+  update-copyright-metadata "$newly_imported_photos"
+  update-lens-metadata "$newly_imported_photos"
 }
 
 main "$1"
