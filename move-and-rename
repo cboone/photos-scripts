@@ -6,11 +6,12 @@ function main {
 
   set -ex
 
+  # -dateFormat "$to_directory"/%Y/%Y-%m-%d/%Y%m%d-%%f.%%e \
   exiftool \
     -ignoreMinorErrors \
     -verbose \
-    -dateFormat "$to_directory"/%Y/%Y-%m-%d/%Y%m%d-%%f.%%e \
-    "-filename<CreateDate" \
+    -dateFormat "$to_directory/%Y%m%d-%%f.%%e" \
+    '-filename<CreateDate' \
     "$from_directory"
 }
 

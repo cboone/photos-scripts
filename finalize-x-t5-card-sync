@@ -6,18 +6,17 @@ function main {
   set -e
 
   local -r card="X-T5 #1"
-  local -r date=$( date +'%Y-%m-%d' )
-  local -r year=$( date +'%Y' )
   local -r photos=~/Pictures/Photographs
-  local -r new_photos=~/Pictures/Photographs/"$year/$date"
+  local -r import_backups="$photos"/Originals
   local -r newly_imported_photos="$photos"/Importing
+  local -r photos_for_review="$photos/Ready for review"
 
   set -x
 
-  backup-imports
+  backup-imports "$newly_imported_photos" "$import_backups"
   update-metadata "$newly_imported_photos"
-  move-and-rename "$newly_imported_photos" "$photos"
-  open-in-bridge "$new_photos"
+  move-and-rename "$newly_imported_photos" "$photos_for_review"
+  open-in-bridge "$photos_for_review"
   # erase-photos-from-card "$card"
   unmount-card "$card"
 }

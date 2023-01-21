@@ -7,8 +7,6 @@ function update-copyright-metadata {
   local -r terms='No reproduction rights are granted without the express written permission of Christopher Boone. No other usage is expressed or implied.'
   local -r url='https://catamounthardware.com'
 
-  set -ex
-
   exiftool \
     -ignoreMinorErrors \
     -overwrite_original_in_place \
@@ -16,7 +14,6 @@ function update-copyright-metadata {
     -verbose \
     -Artist="$name" \
     -Copyright="$name" \
-    -Creator="$name" \
     -CreatorWorkEmail="$email" \
     -CreatorWorkURL="$url" \
     -Credit="$name" \
@@ -32,8 +29,6 @@ function update-lens-metadata {
   local -r lens_info="$lens_make $lens_model"
   local -r max_aperture='4'
 
-  set -ex
-
   # shellcheck disable=2016
   exiftool \
     -ignoreMinorErrors \
@@ -41,15 +36,16 @@ function update-lens-metadata {
     -preserve \
     -verbose \
     -if 'not defined $LensMake or $LensMake eq ""' \
-    -LensID="$lens_info" \
     -LensInfo="$lens_info" \
     -LensMake="$lens_make" \
     -LensModel="$lens_model" \
     -MaxApertureValue="$max_aperture" \
     "$directory"
+  # exiftool can exit with status 2 if no files match the filter
 }
 
 function main {
+  set -ex
   update-copyright-metadata "$1"
   update-lens-metadata "$1"
 }

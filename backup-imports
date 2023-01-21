@@ -3,8 +3,8 @@
 function main {
   set -e
 
-  local -r from_directory=~/Pictures/Photographs/Importing
-  local -r to_directory=~/Pictures/Photographs/'Import backups'
+  local -r from_directory="$1"
+  local -r to_directory="$2"
 
   set -x
 
@@ -17,4 +17,4 @@ function main {
     "$from_directory"
 }
 
-main
+main "$1" "$2"
