@@ -22,6 +22,8 @@ function update-copyright-metadata {
     -UsageTerms="$terms" \
     -WebStatement="$url" \
     "$directory"
+
+  echo "exiftool exit status: $?"
 }
 
 function update-lens-metadata {
@@ -43,6 +45,8 @@ function update-lens-metadata {
     -LensModel="$lens_model" \
     -MaxApertureValue="$max_aperture" \
     "$directory"
+
+  echo "exiftool exit status: $?"
 }
 
 function main {

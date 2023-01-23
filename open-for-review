@@ -1,0 +1,20 @@
+#!/bin/bash
+
+function main {
+  # local -r review_app_name="Adobe Bridge 2023"
+  # local -r review_app_binary="$review_app/$review_app.app"
+  local -r review_app="FastRawViewer"
+  local -r review_app_binary="$review_app.app"
+  local -r photos="$1"
+
+  set -ex
+
+  if pgrep "$review_app"; then
+    osascript -e "quit app \"$review_app\""
+    sleep 5
+  fi
+
+  open "/Applications/$review_app_binary" --args "$photos"
+}
+
+main "$1"

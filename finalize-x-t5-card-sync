@@ -3,8 +3,6 @@
 PATH="/Users/hpg/Pictures/Scripts/:/opt/homebrew/bin:$PATH"
 
 function main {
-  set -e
-
   local -r card="Untitled"
   local -r photos=~/Pictures/Photographs
   local -r photos_for_review="$photos/Ready for review"
@@ -14,8 +12,8 @@ function main {
   backup-new-imports
   update-new-imports-metadata
   move-and-rename-newly-imported-photos
-  open-in-bridge "$photos_for_review"
-  unmount-card "$card" || exit 0
+  open-for-review "$photos_for_review"
+  unmount-card "$card"
 }
 
 main

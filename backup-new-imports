@@ -10,10 +10,13 @@ function main {
   exiftool \
     -ignoreMinorErrors \
     -out . \
+    -progress \
     -verbose \
     -dateFormat "$originals"/%Y/%Y-%m-%d \
     '-Directory<DateTimeOriginal' \
     "$newly_imported_photos"
+
+  echo "exiftool exit status: $?"
 }
 
 main

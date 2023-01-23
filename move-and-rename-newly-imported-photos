@@ -13,6 +13,8 @@ function main {
     -dateFormat "$review_directory"/%Y%m%d-%%f.%%e \
     '-filename<CreateDate' \
     "$imports_directory"
+
+  echo "exiftool exit status: $?"
 }
 
 main
