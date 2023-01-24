@@ -1,0 +1,12 @@
+#!/bin/bash
+
+function main {
+  local -r app_name="/Applications/Adobe Lightroom CC/Adobe Lightroom.app"
+  local -r photos=~/Pictures/Photographs/'Ready for review'/Selected
+
+  set -ex
+
+  open "$photos" -a "$app_name"
+}
+
+main

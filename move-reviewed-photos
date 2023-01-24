@@ -12,6 +12,8 @@ function main {
     -verbose \
     -dateFormat "$photos"/%Y/%Y-%m-%d/%%f.%%e \
     '-filename<CreateDate' \
+    -ignore 'Rejected' \
+    -recurse \
     "$review_directory"
 }
 

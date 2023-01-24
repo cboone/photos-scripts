@@ -9,6 +9,7 @@ function main {
   exiftool -p '$FileName' -q -if '$Rating eq -1' "$review_directory" \
     | cut -d. -f1 \
     | xargs -I {} trash -v "$review_directory/{}".{RAF,xmp}
+  trash -v "$review_directory"/Rejected/*.{RAF,xmp}
 }
 
 main

@@ -7,8 +7,14 @@ function iso8601 {
 function main {
   set -e
 
-  local -r name=$(basename "$1")
-  local -r log=~/Pictures/Scripts/logs/"${name}-$(iso8601)"
+  local log_name
+  if [[ "$2" == 'main' ]]; then
+    log_name="$1"
+    shift
+  else
+    log_name=$(basename "$1")
+  fi
+  local -r log=~/Pictures/Scripts/logs/"${log_name}-$(iso8601)"
 
   set -x
 

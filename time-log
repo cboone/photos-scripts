@@ -5,7 +5,13 @@ function iso8601 {
 }
 
 function main {
-  local -r log_name=$(basename "$1")
+  local log_name
+  if [[ "$2" == 'main' ]]; then
+    log_name="$1"
+    shift
+  else
+    log_name=$(basename "$1")
+  fi
   local -r log=/Users/hpg/Pictures/Scripts/logs/"${log_name}-$(iso8601)"
 
   set -x

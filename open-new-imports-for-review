@@ -1,0 +1,14 @@
+#!/bin/bash
+
+function main {
+  # local -r review_app='Adobe Bridge 2023'
+  local -r review_app='FastRawViewer.app'
+  local -r photos=~/Pictures/Photographs/'Ready for review'
+
+
+  set -ex
+
+  open "$photos" -a "/Applications/$review_app"
+}
+
+main

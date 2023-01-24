@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+PATH="/Users/hpg/Pictures/Scripts/:/opt/homebrew/bin:$PATH"
+
+function main {
+  trash-rejected-photos
+  import-selects-into-lightroom
+  echo 'Done importing selects into Lightroom?'
+  read -p 'Press any key to move all reviewed photos or control-c to cancel... ' -n1 -r -s
+  echo ''
+  move-reviewed-photos
+}
+
+main

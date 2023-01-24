@@ -1,9 +1,9 @@
 #!/bin/bash
 
 function main {
-  set -ex
+  set -x
 
-  diskutil unmount /Volumes/"$1"
+  diskutil unmount /Volumes/Untitled
 }
 
-main "$1"
+main
