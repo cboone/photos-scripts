@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+PATH="/Users/hpg/Pictures/Scripts/:/opt/homebrew/bin:$PATH"
+
+time-log finalize-x-t5-card-sync

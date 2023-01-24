@@ -5,8 +5,6 @@ function iso8601 {
 }
 
 function main {
-  set -e
-
   local log_name
   if [[ "$2" == 'main' ]]; then
     log_name="$1"
