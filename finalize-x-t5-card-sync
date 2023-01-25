@@ -1,12 +1,10 @@
 #!/usr/bin/env bash
 
-PATH="/Users/hpg/Pictures/Scripts/:/opt/homebrew/bin:$PATH"
-
 function main {
   set -x
 
   backup-new-imports
-  update-new-imports-metadata
+  update-new-imports-metadata '/Users/hpg/Pictures/Photographs/Importing'
   move-and-rename-newly-imported-photos
   open-new-imports-for-review
   unmount-card

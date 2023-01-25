@@ -6,9 +6,13 @@ function main {
   set -x
 
   # shellcheck disable=2016
-  exiftool -p '$FileName' -q -if '$Rating eq -1' "$review_directory" \
-    | cut -d. -f1 \
-    | xargs -I {} trash -v "$review_directory/{}".{RAF,xmp}
+  exiftool \
+    -printFormat '$FileName' \
+    -quiet \
+    -if '$Rating eq -1' \
+    "$review_directory" \
+      | cut -d. -f1 \
+      | xargs -I {} trash -v "$review_directory/{}".{RAF,xmp}
   trash -v "$review_directory"/Rejected/*.{RAF,xmp}
 }
 

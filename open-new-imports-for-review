@@ -5,7 +5,6 @@ function main {
   local -r review_app='FastRawViewer.app'
   local -r photos=~/Pictures/Photographs/'Ready for review'
 
-
   set -ex
 
   open "$photos" -a "/Applications/$review_app"

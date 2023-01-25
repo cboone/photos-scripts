@@ -1,0 +1,19 @@
+#!/bin/bash
+
+function main {
+  local -r cc_app_name="/Applications/Adobe Lightroom CC/Adobe Lightroom.app"
+  local -r classic_app_name="/Applications/Adobe Lightroom Classic/Adobe Lightroom Classic.app"
+  local -r photos=~/Pictures/Photographs/'Ready for review'/Selected
+
+  set -e
+
+  open "$photos" -a "$classic_app_name"
+
+  echo 'Done importing selects into Lightroom Classic?'
+  read -p 'Press any key to import selects into Lightroom CC or control-c to cancel... ' -n1 -r -s
+  echo ''
+
+  open "$photos" -a "$cc_app_name"
+}
+
+main

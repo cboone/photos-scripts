@@ -1,10 +1,27 @@
 #!/usr/bin/env bash
 
-function update-copyright-metadata {
+function copy-metadata-to-xmp {
   local -r directory="$1"
-  local -r email='info@catamounthardware.com'
+
+  # shellcheck disable=2016
+  exiftool \
+    -ignoreMinorErrors \
+    -preserve \
+    -verbose \
+    -extension RAF \
+    -out %d%f.xmp \
+    "$directory"
+
+  echo "exiftool exit status: $?"
+}
+
+function update-copyright-and-exposure-metadata {
+  local -r directory="$1"
+  local -r year=$(date +%Y)
+  local -r email='rights@catamounthardware.com'
   local -r name='Christopher Boone'
-  local -r terms='No reproduction rights are granted without the express written permission of Christopher Boone. No other usage is expressed or implied.'
+  local -r rights="Copyright © $year $name"
+  local -r terms="No reproduction rights are granted without the express written permission of $name. No other usage is expressed or implied."
   local -r url='https://catamounthardware.com'
 
   # shellcheck disable=2016
@@ -12,15 +29,21 @@ function update-copyright-metadata {
     -ignoreMinorErrors \
     -overwrite_original_in_place \
     -preserve \
-    -verbose \
-    -if 'not defined $WebStatement or $WebStatement eq ""' \
-    -Artist="$name" \
+    -v2 \
     -Copyright="$name" \
+    -Creator="$name" \
     -CreatorWorkEmail="$email" \
     -CreatorWorkURL="$url" \
     -Credit="$name" \
+    -Rights="$rights" \
     -UsageTerms="$terms" \
     -WebStatement="$url" \
+    -Brightness='0' \
+    -ProcessVersion='5.7' \
+    -Shadows='0' \
+    -ToneCurve='0, 0, 255, 255' \
+    -ToneCurveName='linear' \
+    -XMP-crs:Contrast='0' \
     "$directory"
 
   echo "exiftool exit status: $?"
@@ -38,7 +61,7 @@ function update-lens-metadata {
     -ignoreMinorErrors \
     -overwrite_original_in_place \
     -preserve \
-    -verbose \
+    -v2 \
     -if 'not defined $LensMake or $LensMake eq ""' \
     -LensInfo="$lens_info" \
     -LensMake="$lens_make" \
@@ -50,13 +73,13 @@ function update-lens-metadata {
 }
 
 function main {
-  local -r photos=~/Pictures/Photographs
-  local -r newly_imported_photos="$photos"/Importing
+  local -r newly_imported_photos="$1"
 
   set -x
 
-  update-copyright-metadata "$newly_imported_photos"
+  update-copyright-and-exposure-metadata "$newly_imported_photos"
   update-lens-metadata "$newly_imported_photos"
+  copy-metadata-to-xmp "$newly_imported_photos"
 }
 
 main "$1"
