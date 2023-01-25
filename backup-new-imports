@@ -1,22 +1,54 @@
 #!/usr/bin/env bash
 
 function main {
+  local -r year="$(date +%Y)"
+  local -r log_directory=~/Pictures/Photographs/Logs/"$year"
+  local -r log_file="$log_directory/$(date-iso8601-ish)-imported.csv"
   local -r photos=~/Pictures/Photographs
   local -r originals="$photos"/Originals
   local -r newly_imported_photos="$photos"/Importing
 
-  set -x
+  local -a exiftool_output
+
+  mkdir -p "$log_directory"
+  touch "$log_file"
+  echo 'Original filename,Path to backed up original' >> "$log_file"
+
+  mapfile -t exiftool_output < <( \
+    exiftool \
+      -ignoreMinorErrors \
+      -quiet \
+      -DateFormat "$originals"/%Y/%Y-%m-%d/%%f.%%e \
+      '-TestName<DateTimeOriginal' \
+      "$newly_imported_photos"
+  )
 
   exiftool \
     -ignoreMinorErrors \
-    -out . \
-    -progress \
-    -verbose \
-    -dateFormat "$originals"/%Y/%Y-%m-%d \
-    '-Directory<DateTimeOriginal' \
+    -DateFormat "$originals"/%Y/%Y-%m-%d/%%f.%%e \
+    '-TestName<DateTimeOriginal' \
     "$newly_imported_photos"
 
-  echo "exiftool exit status: $?"
+  # exiftool \
+  #   -ignoreMinorErrors \
+  #   -out . \
+  #   -dateFormat "$originals"/%Y/%Y-%m-%d \
+  #   '-Directory<DateTimeOriginal' \
+  #   "$newly_imported_photos"
+
+  for moved_file in "${exiftool_output[@]}"; do
+    local original_filename=$( \
+      echo "$moved_file" \
+        | awk -F 'Importing/' '{print $2}' \
+        | awk -F "' --> '" '{print $1}'
+    )
+    local backup_path=$( \
+      echo "$moved_file" \
+        | awk -F 'Originals/' '{print "Originals/" $2}' \
+        | awk -F "'" '{print $1}' \
+    )
+    echo "$original_filename,$backup_path" >> "$log_file"
+  done
 }
 
 main

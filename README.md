@@ -10,6 +10,7 @@ NB: Path context is `~/Pictures/Photographs`.
 4. Which runs `finalize-x-t5-card-sync` with timestamped logging to `./Scripts/logs` (which can be viewed using `less-log` or `tail-log`)
    1. Which runs `backup-new-imports` which uses `exiftool` to
       1. Copy all photos in `Importing/` to `Originals/YYYY/YY-MM-DD/` (using the photo creation date)
+      2. Create a structured log of all backed up photos in `Logs/YYYY/YYYYmmddTHHMMSS-imported.csv` (using today's date in ISO 8601-ish format)
    2. Then runs `update-new-imports-metadata` which uses `exiftool` to
       1. Update the copyright metadata to standard values
       2. Update the exposure metadata to remove existing adjustments and set a linear (gamma 2.2) contrast curve, to create a flat-toned photo
@@ -17,7 +18,7 @@ NB: Path context is `~/Pictures/Photographs`.
       4. Copy all metadata from the RAF file to an XMP sidecar file
    3. Then runs `move-and-rename-newly-imported-photos` which uses `exiftool` to
       1. Move the photos to `Ready for Review/YYYY-MM-DD-FILENAME.{RAF,xmp}` (using the photo creation date)
-      2. Create a structured log of all imported photos in `Logs/YYYY/YYYYmmddTHHMMSS-imported.csv` (using today's date in ISO 8601-ish format)
+      2. Create a structured log of all imported photos in `Logs/YYYY/YYYYmmddTHHMMSS-renamed.csv` (using today's date in ISO 8601-ish format)
    4. Then runs `open-new-imports-for-review`
       1. Which opens `Ready for Review/` in FastRawViewer
          1. In which I review the photos by
@@ -50,21 +51,29 @@ NB: Path context is `~/Pictures/Photographs`.
 
 NB: Dates in photo filenames are the date of photo creation. Dates in log filenames are the current date (the date the script was run).
 
-#### Imports
+#### Imported
 
 `Logs/YYYY/YYYYmmddTHHMMSS-imported.csv`
 
-|Path to original|Updated filename|Sidecar|
-|-|-|-|
-|Originals/2023/2023-01-24/DSCF2859.RAF|20230124-DSCF2859.RAF|20230124-DSCF2859.xmp|
+|Original filename|Path to backed up original|
+|-|-|
+|DSCF2859.RAF|Originals/2023/2023-01-24/DSCF2859.RAF|
 
-#### Rejects
+#### Rejected
 
 `Logs/YYYY/YYYYmmddTHHMMSS-rejected.csv`
 
 |Filename|
 |-|
 |20230124-DSCF2859.RAF|
+
+#### Renamed
+
+`Logs/YYYY/YYYYmmddTHHMMSS-renamed.csv`
+
+|Original filename|Updated filename|Sidecar|
+|-|-|-|
+|DSCF2859.RAF|20230124-DSCF2859.RAF|20230124-DSCF2859.xmp|
 
 #### Reviewed
 
@@ -74,7 +83,7 @@ NB: Dates in photo filenames are the date of photo creation. Dates in log filena
 |-|-|
 |2023/2023-01-24/DSCF2859.RAF|2023/2023-01-24/DSCF2859.xmp|
 
-#### Selects
+#### Selected
 
 `Logs/YYYY/YYYYmmddTHHMMSS-selected.csv`
 

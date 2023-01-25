@@ -1,20 +1,50 @@
 #!/usr/bin/env bash
 
 function main {
+  export year
+  year="$(date +%Y)"
+
   local -r imports_directory=~/Pictures/Photographs/Importing
+  local -r log_directory=~/Pictures/Photographs/Logs/"$year"
+  local -r log_file="$log_directory/$(date-iso8601-ish)-imported.csv"
   local -r review_directory=~/Pictures/Photographs/'Ready for review'
+  local -a exiftool_output
 
-  set -x
+  # set -x
 
-  # shellcheck disable=2016
+  mkdir -p "$log_directory"
+  touch "$log_file"
+  echo 'Path to original,Updated filename,Sidecar' >> "$log_file"
+
+  mapfile -t paths < <( \
+    exiftool \
+      -ignoreMinorErrors \
+      -quiet \
+      -DateFormat "$review_directory"/%Y-%m-%d-%%f.%%e \
+      '-TestName<DateTimeOriginal' \
+      "$imports_directory"\
+  )
+
   exiftool \
     -ignoreMinorErrors \
-    -verbose \
-    -DateFormat "$review_directory"/%Y%m%d-%%f.%%e \
-    '-FileName<DateTimeOriginal' \
+    -DateFormat "$review_directory"/%Y-%m-%d-%%f.%%e \
+    '-TestName<DateTimeOriginal' \
     "$imports_directory"
 
-  echo "exiftool exit status: $?"
+  # exiftool \
+  #   -ignoreMinorErrors \
+  #   -verbose \
+  #   -DateFormat "$review_directory"/%Y%m%d-%%f.%%e \
+  #   '-FileName<DateTimeOriginal' \
+  #   "$imports_directory"
+
+  for moved_file in "${paths[@]}"; do
+    echo "$moved_file" \
+      | awk -F 'Importing/' '{print$2}' \
+      | awk -F "' --> '" '{print "Originals/" ENVIRON["year"] "/" $1 "," $2}' \
+      | awk -F "'" '{print$1}' \
+        >> "$log_file"
+  done
 }
 
 main
