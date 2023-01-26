@@ -10,10 +10,15 @@ function main {
 
   local -a exiftool_output
 
+  echo 'backup-new-imports: Copying all newly imported photos from Photographs/Importing to Photographs/Originals/YYYY/YYYY-mm-dd/'
+  echo "backup-new-imports: Logging the changes to $log_file"
+
   mkdir -p "$log_directory"
   touch "$log_file"
+  # Log headers
   echo 'Original photo filename,Path to backed up original photo' >> "$log_file"
 
+  # Run it in TestName mode (dry run) to capture what will change (details below)
   mapfile -t exiftool_output < <( \
     exiftool \
       -ignoreMinorErrors \
@@ -23,8 +28,11 @@ function main {
       "$newly_imported_photos"
   )
 
+  # Print the changes
   printf '%s\n' "${exiftool_output[@]}"
 
+  # Run it again for real to actually create the directories (as needed) and copy the files
+  # Using `-out dummy-directory` and `-Directory` here to copy the files, not move them; see: <https://exiftool.org/filename.html#ex5>
   exiftool \
     -ignoreMinorErrors \
     -out . \
@@ -32,20 +40,29 @@ function main {
     '-Directory<DateTimeOriginal' \
     "$newly_imported_photos"
 
+  # Each line looks like (.RAF only at this point, these are straight OOC):
+  #   '/Users/hpg/Pictures/Photographs/Importing/2023-01-24-DSCF9991.RAF' --> '/Users/hpg/Pictures/Photographs/Originals/2023/2023-01-24/2023-01-24-DSCF9991.RAF'
   for copied_file in "${exiftool_output[@]}"; do
     local original_filename
     local backup_path
 
+    # Get the original filename:
+    #   2023-01-24-DSCF9991.RAF
     original_filename=$( \
       echo "$copied_file" \
         | awk -F 'Importing/' '{print $2}' \
         | awk -F "' --> '" '{print $1}'
     )
+
+    # Get the backup copy path, relative to ~/Pictures/Photographs:
+    #   Originals/2023/2023-01-24/2023-01-24-DSCF9991.RAF
     backup_path=$( \
       echo "$copied_file" \
         | awk -F 'Originals/' '{print "Originals/" $2}' \
         | awk -F "'" '{print $1}' \
     )
+
+    # Log the changes
     echo "$original_filename,$backup_path" >> "$log_file"
   done
 }

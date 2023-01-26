@@ -3,7 +3,7 @@
 function main {
   local -r year="$(date +%Y)"
   local -r log_directory=~/Pictures/Photographs/Logs/"$year"
-  local -r log_file="$log_directory/$(date-iso8601-ish)-rejected.csv"
+  local -r log_file="$log_directory/$(date-iso8601-ish)-selected.csv"
   local -r cc_app_name="/Applications/Adobe Lightroom CC/Adobe Lightroom.app"
   local -r classic_app_name="/Applications/Adobe Lightroom Classic/Adobe Lightroom Classic.app"
   local -r photos=~/Pictures/Photographs
@@ -12,10 +12,16 @@ function main {
   local -a exiftool_output
   local -a full_paths_for_importing
 
+  echo 'move-and-import-selected-photos: Moving all selected photos (≥ 1 rating) and their sidecars from Ready for review/YYYY-mm-dd-*.{RAF,xmp} to their permanent home at YYYY/YYYY-mm-dd/YYYY-mm-dd-*.{RAF,xmp}'
+  echo 'move-and-import-selected-photos: Importing them all into Lightroom Classic, then waiting for keyboard confirmation, then importing them all (again) into Lightroom CC'
+  echo "move-and-import-selected-photos: Logging the changes to $log_file"
+
   mkdir -p "$log_directory"
   touch "$log_file"
+  # Log headers
   echo 'Path to photo file,Path to sidecar' >> "$log_file"
 
+  # Run it in TestName mode (dry run) to capture which photos have been selected, ie have a rating of ≥ 1 (details below)
   mapfile -t exiftool_output < <( \
     # shellcheck disable=2016
     exiftool \
@@ -27,32 +33,55 @@ function main {
       "$review_directory"
   )
 
-  printf '%s\n' "${exiftool_output[@]}"
-
+  # Each line looks like (with either .RAF or .xmp):
+  #   '/Users/hpg/Pictures/Photographs/Ready for review/2023-01-24-DSCF9994.xmp' --> '/Users/hpg/Pictures/Photographs/2023/2023-01-24/2023-01-24-DSCF9994.xmp'
   for selected_file in "${exiftool_output[@]}"; do
+    # Only the .xmp files have ratings, so use those and recreate the .RAF paths below
     if [[ "$selected_file" =~ .xmp ]]; then
+      local destination_directory_path
       local full_path_without_extension
       local review_path_without_extension
       local short_path
 
+      # Get the reviewed photo's full path (without extension):
+      #   /Users/hpg/Pictures/Photographs/Ready for review/2023-01-24-DSCF9994
       review_path_without_extension=$( \
         echo "$selected_file" \
           | awk -F "'" '{print $2}' \
           | cut -d . -f 1
       )
+
+      # Get the photo's full destination path (without extension):
+      #   /Users/hpg/Pictures/Photographs/2023/2023-01-24/2023-01-24-DSCF9994
       full_path_without_extension=$( \
         echo "$selected_file" \
           | awk -F "'" '{print $4}' \
           | cut -d . -f 1
       )
+
+      # Get the photo's short destination path (relative to ~/Picutures/Photographs, without extension):
+      #   2023/2023-01-24/2023-01-24-DSCF9994
       short_path=$( \
         echo "$full_path_without_extension" \
           | awk -F 'Photographs/' '{print $2}'
       )
 
+      # Get the photo's full destination directory path:
+      #   /Users/hpg/Pictures/Photographs/2023/2023-01-24/
+      destination_directory_path="${full_path_without_extension%/*}/"
+
+      # Log the short destination paths
       echo "$short_path.RAF,$short_path.xmp" >> "$log_file"
+
+      # Keep track of the full destination paths (both photos and sidecars), for importing into the apps below
       full_paths_for_importing+=("$full_path_without_extension.RAF" "$full_path_without_extension.xmp")
-      mv -v "$review_path_without_extension".{RAF,xmp} "$full_path_without_extension".{RAF,xmp}
+
+      # Ensure the destination directory exists
+      mkdir -p "$destination_directory_path"
+
+      # Move the photo and sidecar files from the review folder to their permanent home
+      mv -v "$review_path_without_extension".RAF "$full_path_without_extension".RAF
+      mv -v "$review_path_without_extension".xmp "$full_path_without_extension".xmp
     fi
   done
 

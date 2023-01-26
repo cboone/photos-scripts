@@ -9,10 +9,15 @@ function main {
 
   local -a exiftool_output
 
+  echo 'move-and-rename-newly-imported-photos: Moving all photo and sidecar files from Photographs/Importing/*.{RAF,xmp} to Photographs/Ready for review/YYYY-mm-dd-*.{RAF,xmp}'
+  echo "move-and-rename-newly-imported-photos: Logging the changes to $log_file"
+
   mkdir -p "$log_directory"
   touch "$log_file"
+  # Log headers
   echo 'Original photo filename,Updated photo filename,Sidecar filename' >> "$log_file"
 
+  # Run it in TestName mode (dry run) to capture what will change (details below)
   mapfile -t exiftool_output < <( \
     exiftool \
       -ignoreMinorErrors \
@@ -21,32 +26,46 @@ function main {
       '-TestName<DateTimeOriginal' \
       "$imports_directory"
   )
-
+  # Print the changes
   printf '%s\n' "${exiftool_output[@]}"
 
+  # Run it again for real to actually create the directories (as needed) and move the files
   exiftool \
     -ignoreMinorErrors \
     -DateFormat "$review_directory"/%Y-%m-%d-%%f.%%e \
     '-FileName<DateTimeOriginal' \
     "$imports_directory"
 
+  # Each line looks like (with either .RAF or .xmp):
+  # '/Users/hpg/Pictures/Photographs/Importing/2023-01-24-DSCF9991.RAF' --> '/Users/hpg/Pictures/Photographs/Ready for review/2023-01-24-2023-01-24-DSCF9991.RAF'
   for moved_file in "${exiftool_output[@]}"; do
+    # Simpler to only deal with the .RAFs, then add the .xmp back in below
     if [[ "$moved_file" =~ .RAF ]]; then
       local original_filename
       local updated_filename
       local sidecar_filename
 
+      # Get the original photo filename:
+      #   DSCF9991.RAF
       original_filename=$( \
         echo "$moved_file" \
           | awk -F 'Importing/' '{print $2}' \
           | awk -F "'" '{print $1}'
       )
+
+      # Get the updated photo filename:
+      #   2023-01-24-DSCF9991.RAF
       updated_filename=$( \
         echo "$moved_file" \
           | awk -F 'review/' '{print $2}' \
           | awk -F "'" '{print $1}'
       )
+
+      # Recreate the sidecar filename:
+      #   2023-01-24-DSCF9991.xmp
       sidecar_filename="${updated_filename/RAF/xmp}"
+
+      # Log the changes
       echo "$original_filename,$updated_filename,$sidecar_filename" >> "$log_file"
     fi
   done

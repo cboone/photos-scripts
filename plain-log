@@ -2,13 +2,10 @@
 
 function main {
   local log_name
-  if [[ "$2" == 'main' ]]; then
-    log_name="$1"
-    shift
-  else
-    log_name=$(basename "$1")
-  fi
+  log_name=$(basename "$1")
   local -r log=~/Pictures/Scripts/logs/"${log_name}-$(date-iso8601-ish)"
+
+  echo "plain-log: Logging $log_name to $log"
 
   set -x
 

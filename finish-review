@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
-PATH="/Users/hpg/Pictures/Scripts/:/opt/homebrew/bin:$PATH"
-
 function main {
+  echo 'finish-review: Newly imported photos have been reviewed (rejected and selected)'
+
   trash-rejected-photos
   move-and-import-selected-photos
   echo 'Done importing selects into Lightroom?'

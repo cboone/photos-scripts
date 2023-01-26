@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 
 function main {
+  echo 'finalize-x-t5-card-sync: New photos have been copied by Chronosync, preparing them for review'
+
   set -x
 
   backup-new-imports

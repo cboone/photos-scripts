@@ -9,10 +9,15 @@ function main {
 
   local -a exiftool_output
 
+  echo 'move-reviewed-photos: Moving all reviewed photos (0 rating) and their sidecars from Ready for review/YYYY-mm-dd-*.{RAF,xmp} to their permanent home at YYYY/YYYY-mm-dd/YYYY-mm-dd-*.{RAF,xmp}'
+  echo "move-reviewed-photos: Logging the changes to $log_file"
+
   mkdir -p "$log_directory"
   touch "$log_file"
+  # Log headers
   echo 'Path to photo,Path to sidecar' >> "$log_file"
 
+  # Run it in TestName mode (dry run) to capture what will change (details below)
   mapfile -t exiftool_output < <( \
     # shellcheck disable=2016
     exiftool \
@@ -22,9 +27,10 @@ function main {
       '-TestName<DateTimeOriginal' \
       "$review_directory"
   )
-
+  # Print the changes
   printf '%s\n' "${exiftool_output[@]}"
 
+  # Run it again for real to actually create the directories (as needed), move the files, and print the changes
   # shellcheck disable=2016
   exiftool \
     -ignoreMinorErrors \
@@ -32,17 +38,27 @@ function main {
     '-FileName<DateTimeOriginal' \
     "$review_directory"
 
+  # Each line looks like (with either .RAF or .xmp):
+  #   '/Users/hpg/Pictures/Photographs/Ready for review/2023-01-24-DSCF9993.RAF' --> '/Users/hpg/Pictures/Photographs/2023/2023-01-24/2023-01-24-DSCF9993.RAF'
   for reviewed_file in "${exiftool_output[@]}"; do
+    # Simpler to only deal with the .RAFs, then add the .xmp back in below
     if [[ "$reviewed_file" =~ .RAF ]]; then
       local photo_path
       local sidecar_path
 
+      # Get the destination path, relative to ~/Pictures/Photographs:
+      #   2023/2023-01-24/2023-01-24-DSCF9993.RAF
       photo_path=$( \
         echo "$reviewed_file" \
           | awk -F 'Photographs/' '{print $3}' \
           | awk -F "'" '{print $1}'
       )
+
+      # Recreate the sidecar path:
+      #   2023/2023-01-24/2023-01-24-DSCF9993.xmp
       sidecar_path="${photo_path/RAF/xmp}"
+
+      # Log the changes
       echo "$photo_path,$sidecar_path" >> "$log_file"
     fi
   done

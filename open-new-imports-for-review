@@ -1,9 +1,10 @@
 #!/bin/bash
 
 function main {
-  # local -r review_app='Adobe Bridge 2023'
   local -r review_app='FastRawViewer.app'
   local -r photos=~/Pictures/Photographs/'Ready for review'
+
+  echo "open-new-imports-for-review: Opening all newly imported photos in $review_app"
 
   set -ex
 

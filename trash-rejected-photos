@@ -8,10 +8,15 @@ function main {
 
   local -a exiftool_output
 
+  echo 'trash-rejected-photos: Moving all rejected photos (-1 rating) and their sidecars to the Trash'
+  echo "trash-rejected-photos: Logging the changes to $log_file"
+
   mkdir -p "$log_directory"
   touch "$log_file"
+  # Log headers
   echo 'Photo filename,Sidecar filename' >> "$log_file"
 
+  # Run it in TestName mode (dry run) to capture which photos have been rejected
   mapfile -t exiftool_output < <( \
     # shellcheck disable=2016
     exiftool \
@@ -23,9 +28,14 @@ function main {
         | cut -d . -f 1
   )
 
+  # Each line looks like (photo filename without extension):
+  #   2023-01-24-DSCF9993
   for rejected_file in "${exiftool_output[@]}"; do
-    echo "$rejected_file.RAF,$rejected_file.xmp" >> "$log_file"
+    # Move the rejected photos and their sidecars to the trash and print the changes
     trash -v "$review_directory/$rejected_file".{RAF,xmp}
+
+    # Log the changes
+    echo "$rejected_file.RAF,$rejected_file.xmp" >> "$log_file"
   done
 }
 

@@ -1,6 +1,8 @@
 #!/bin/bash
 
 function main {
+  echo "unmount-card: Unmounting 'Untitled' card"
+
   set -x
 
   diskutil unmount /Volumes/Untitled

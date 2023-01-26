@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+# Copy all metadata from the photo file to a newly created xmp sidecar file
 function copy-metadata-to-xmp {
   local -r directory="$1"
 
@@ -13,6 +14,8 @@ function copy-metadata-to-xmp {
     "$directory"
 }
 
+# Add copyright and creator details
+# Update exposure settings to flatten / linearize the image: <https://www.fastrawviewer.com/blog/red_flowers_photography_to-see-the-real-picture>
 function update-copyright-and-exposure-metadata {
   local -r directory="$1"
   local -r year=$(date +%Y)
@@ -45,6 +48,7 @@ function update-copyright-and-exposure-metadata {
     "$directory"
 }
 
+# Adds lens metadata iff the photo does not have a LensMake, which currently (2023-01-26) indicates it was taken with the Laowa 10mm
 function update-lens-metadata {
   local -r directory="$1"
   local -r lens_make='Venus Optics'
@@ -68,6 +72,8 @@ function update-lens-metadata {
 
 function main {
   local -r newly_imported_photos="$1"
+
+  echo "update-new-imports-metadata: Updating newly imported photos' copyright, exposure, and (as needed) lens metadata, then copying all metadata from the photo files to newly created xmp sidecar files"
 
   set -x
 

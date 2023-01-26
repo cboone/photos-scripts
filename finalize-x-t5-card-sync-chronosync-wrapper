@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+# Setting the path explicitly is necessary here because who the hell knows where or how Chronosync runs this thing
 PATH="/Users/hpg/Pictures/Scripts/:/opt/homebrew/bin:$PATH"
 
 time-log finalize-x-t5-card-sync
