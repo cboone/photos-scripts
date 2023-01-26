@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+
+# Create empty sidecar file for RAF photos in specified directory
+function main {
+  local -r directory="$1"
+
+  # shellcheck disable=2016
+  exiftool \
+    -ignoreMinorErrors \
+    -v2 \
+    '-XMP-exif:DateTimeOriginal<ExifIFD:DateTimeOriginal' \
+    -XMP-photoshop:SidecarForExtension='RAF' \
+    '-XMP-xmp:CreateDate<ExifIFD:CreateDate' \
+    -extension RAF \
+    -out %d%f.xmp \
+    "$directory"
+}
+
+main "$1"
