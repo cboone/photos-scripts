@@ -83,7 +83,7 @@ NB: Dates in photo filenames are the date of photo creation. Dates in log filena
 
 `Logs/YYYY/YYYYmmddTHHMMSS-rejected.csv`
 
-|Photo filename,Sidecar filename|
+|Photo filename|Sidecar filename|
 |-|-|
 |20230124-DSCF2859.RAF|20230124-DSCF2859.xmp|
 
