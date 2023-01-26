@@ -13,7 +13,7 @@ NB: Path context is `~/Pictures/Photographs`.
       2. Create a structured log of all backed up photos in `Logs/YYYY/YYYYmmddTHHMMSS-imported.csv` (using today's date in ISO 8601-ish format)
    2. Then runs `update-new-imports-metadata` which uses `exiftool` to
       1. Update the copyright metadata to standard values
-      2. Update the exposure metadata to remove existing adjustments and set a linear (gamma 2.2) contrast curve, to create a flat-toned photo
+      2. Update the exposure metadata to remove existing adjustments and set a linear (gamma 2.2) contrast curve, to create a flat-toned / linearized photo, following the FastRawViewer approach: <https://www.fastrawviewer.com/blog/red_flowers_photography_to-see-the-real-picture>
       3. Update the lens metadata, iff the lens used (per file) appears to have been a manual lens without exif data (the Laowa 10mm)
       4. Copy all metadata from the RAF file to an XMP sidecar file
    3. Then runs `move-and-rename-newly-imported-photos` which uses `exiftool` to
@@ -45,6 +45,19 @@ NB: Path context is `~/Pictures/Photographs`.
    4. Then runs `move-reviewed-photos` which uses `exiftool` to
       1. Move all remaining files (RAF and xmp) from `Ready to review/` to `YYYY/` (using the photo creation date)
       2. Create a structured log of all reviewed (but not selected or rejected) photos in `Logs/YYYY/YYYYmmddTHHMMSS-reviewed.csv` (using today's date)
+
+### Goals
+
+- Store all the unmodified original RAFs straight OOC
+- Add all necessary metadata and set exposure setttings as early in the pipeline as possible, so as not to rely on external tools
+- Store the working copies in a datestamped directory structure, independent of any external tools
+- Only import selects into Lightroom, but store all non-rejected photos as working copies
+- Import selects into Lightroom such that Classic uses the local working copy and CC (desktop, iOS, and web) uses the full RAF in the cloud, and changes are synced between them
+- Log all automated changes in a lightweight but structured format so that future changes to the workflow can be more easily accomodated
+
+#### Other notes
+
+I suspect there are still ways for Lightroom Classic / the local catalog and Lightroom CC / the cloud to get out of sync. For example, if I use "Enhance" in Classic, it creates a new file alongside the original and imports it, and presumably syncs it as appropriate with the cloud; but what happens if I use "Enhance" in CC?****
 
 ### Structured log format
 
@@ -92,7 +105,7 @@ NB: Dates in photo filenames are the date of photo creation. Dates in log filena
 
 ### References
 
-- FastRawViewer approach to flattening / linearizing raw files: <https://www.fastrawviewer.com/blog/red_flowers_photography_to-see-the-real-picture>
+- The FastRawViewer approach to flattening / linearizing raw files is described in multiple blog posts and articles; this blog post has the most detailed description of the actual metadata tag changes used to accomplish it: <https://www.fastrawviewer.com/blog/red_flowers_photography_to-see-the-real-picture>
 
 ### Tools
 

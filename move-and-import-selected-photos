@@ -19,7 +19,7 @@ function main {
   mkdir -p "$log_directory"
   touch "$log_file"
   # Log headers
-  echo 'Path to photo file,Path to sidecar' >> "$log_file"
+  echo 'Path to photo,Path to sidecar' >> "$log_file"
 
   # Run it in TestName mode (dry run) to capture which photos have been selected, ie have a rating of ≥ 1 (details below)
   mapfile -t exiftool_output < <( \

@@ -19,6 +19,7 @@ function copy-metadata-to-xmp {
 function update-copyright-and-exposure-metadata {
   local -r directory="$1"
   local -r year=$(date +%Y)
+  local -r digital_source_type='http://cv.iptc.org/newscodes/digitalsourcetype/digitalCapture'
   local -r email='rights@catamounthardware.com'
   local -r name='Christopher Boone'
   local -r rights="Copyright © $year $name"
@@ -39,6 +40,10 @@ function update-copyright-and-exposure-metadata {
     -Rights="$rights" \
     -UsageTerms="$terms" \
     -WebStatement="$url" \
+    -XMP-xmpRights:Marked='True' \
+    -XMP-plus:ImageCreatorName="$name" \
+    -XMP-plus:CopyrightOwnerName="$name" \
+    -XMP-iptcExt:DigitalSourceType="$digital_source_type" \
     -Brightness='0' \
     -ProcessVersion='5.7' \
     -Shadows='0' \
@@ -67,6 +72,9 @@ function update-lens-metadata {
     -LensMake="$lens_make" \
     -LensModel="$lens_model" \
     -MaxApertureValue="$max_aperture" \
+    -XMP-crs:AutoLateralCA='1' \
+    -XMP-crs:VignetteAmount='+90' \
+    -XMP-crs:VignetteMidpoint='10' \
     "$directory"
 }
 

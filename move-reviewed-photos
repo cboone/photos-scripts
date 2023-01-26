@@ -3,7 +3,7 @@
 function main {
   local -r year="$(date +%Y)"
   local -r log_directory=~/Pictures/Photographs/Logs/"$year"
-  local -r log_file="$log_directory/$(date-iso8601-ish)-rejected.csv"
+  local -r log_file="$log_directory/$(date-iso8601-ish)-reviewed.csv"
   local -r photos=~/Pictures/Photographs
   local -r review_directory="$photos/Ready for review"
 

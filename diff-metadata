@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+diff <(exiftool -a -G1 "$1") <(exiftool -a -G1 "$2")
