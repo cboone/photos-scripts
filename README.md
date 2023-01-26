@@ -57,7 +57,7 @@ NB: Path context is `~/Pictures/Photographs`.
 
 #### Other notes
 
-I suspect there are still ways for Lightroom Classic / the local catalog and Lightroom CC / the cloud to get out of sync. For example, if I use "Enhance" in Classic, it creates a new file alongside the original and imports it, and presumably syncs it as appropriate with the cloud; but what happens if I use "Enhance" in CC?****
+I suspect there are still ways for Lightroom Classic / the local catalog and Lightroom CC / the cloud to get out of sync. For example, if I use "Enhance" in Classic, it creates a new file alongside the original and imports it, and presumably syncs it as appropriate with the cloud; but what happens if I use "Enhance" in CC?
 
 ### Structured log format
 
