@@ -35,6 +35,7 @@ function main {
   for moved_file in "${exiftool_output[@]}"; do
     local original_filename
     local backup_path
+    
     original_filename=$( \
       echo "$moved_file" \
         | awk -F 'Importing/' '{print $2}' \

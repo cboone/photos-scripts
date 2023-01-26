@@ -11,8 +11,6 @@ function copy-metadata-to-xmp {
     -extension RAF \
     -out %d%f.xmp \
     "$directory"
-
-  echo "exiftool exit status: $?"
 }
 
 function update-copyright-and-exposure-metadata {
@@ -45,8 +43,6 @@ function update-copyright-and-exposure-metadata {
     -ToneCurveName='linear' \
     -XMP-crs:Contrast='0' \
     "$directory"
-
-  echo "exiftool exit status: $?"
 }
 
 function update-lens-metadata {
@@ -68,8 +64,6 @@ function update-lens-metadata {
     -LensModel="$lens_model" \
     -MaxApertureValue="$max_aperture" \
     "$directory"
-
-  echo "exiftool exit status: $?"
 }
 
 function main {

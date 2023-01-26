@@ -51,7 +51,7 @@ NB: Path context is `~/Pictures/Photographs`.
 
 NB: Dates in photo filenames are the date of photo creation. Dates in log filenames are the current date (the date the script was run).
 
-#### Imported
+#### 1. Imported
 
 `Logs/YYYY/YYYYmmddTHHMMSS-imported.csv`
 
@@ -59,19 +59,11 @@ NB: Dates in photo filenames are the date of photo creation. Dates in log filena
 |-|-|
 |DSCF2859.RAF|Originals/2023/2023-01-24/DSCF2859.RAF|
 
-#### Rejected
-
-`Logs/YYYY/YYYYmmddTHHMMSS-rejected.csv`
-
-|Filename|
-|-|
-|20230124-DSCF2859.RAF|
-
-#### Renamed
+#### 2. Renamed
 
 `Logs/YYYY/YYYYmmddTHHMMSS-renamed.csv`
 
-|Original filename|Updated filename|Sidecar|
+|Original filename|Updated filename|Sidecar filename|
 |-|-|-|
 |DSCF2859.RAF|20230124-DSCF2859.RAF|20230124-DSCF2859.xmp|
 
@@ -82,6 +74,14 @@ NB: Dates in photo filenames are the date of photo creation. Dates in log filena
 |Path to file|Path to sidecar|
 |-|-|
 |2023/2023-01-24/DSCF2859.RAF|2023/2023-01-24/DSCF2859.xmp|
+
+#### Rejected
+
+`Logs/YYYY/YYYYmmddTHHMMSS-rejected.csv`
+
+|Filename|
+|-|
+|20230124-DSCF2859.RAF|
 
 #### Selected
 

@@ -1,49 +1,54 @@
 #!/usr/bin/env bash
 
 function main {
-  export year
-  year="$(date +%Y)"
-
+  local -r year="$(date +%Y)"
   local -r imports_directory=~/Pictures/Photographs/Importing
   local -r log_directory=~/Pictures/Photographs/Logs/"$year"
-  local -r log_file="$log_directory/$(date-iso8601-ish)-imported.csv"
+  local -r log_file="$log_directory/$(date-iso8601-ish)-renamed.csv"
   local -r review_directory=~/Pictures/Photographs/'Ready for review'
-  local -a exiftool_output
 
-  # set -x
+  local -a exiftool_output
 
   mkdir -p "$log_directory"
   touch "$log_file"
-  echo 'Path to original,Updated filename,Sidecar' >> "$log_file"
+  echo 'Original filename,Updated filename,Sidecar filename' >> "$log_file"
 
-  mapfile -t paths < <( \
+  mapfile -t exiftool_output < <( \
     exiftool \
       -ignoreMinorErrors \
       -quiet \
       -DateFormat "$review_directory"/%Y-%m-%d-%%f.%%e \
       '-TestName<DateTimeOriginal' \
-      "$imports_directory"\
+      "$imports_directory"
   )
+
+  printf '%s\n' "${exiftool_output[@]}"
 
   exiftool \
     -ignoreMinorErrors \
     -DateFormat "$review_directory"/%Y-%m-%d-%%f.%%e \
-    '-TestName<DateTimeOriginal' \
+    '-FileName<DateTimeOriginal' \
     "$imports_directory"
 
-  # exiftool \
-  #   -ignoreMinorErrors \
-  #   -verbose \
-  #   -DateFormat "$review_directory"/%Y%m%d-%%f.%%e \
-  #   '-FileName<DateTimeOriginal' \
-  #   "$imports_directory"
+  for moved_file in "${exiftool_output[@]}"; do
+    if [[ "$moved_file" =~ .RAF ]]; then
+      local original_filename
+      local updated_filename
+      local sidecar_filename
 
-  for moved_file in "${paths[@]}"; do
-    echo "$moved_file" \
-      | awk -F 'Importing/' '{print$2}' \
-      | awk -F "' --> '" '{print "Originals/" ENVIRON["year"] "/" $1 "," $2}' \
-      | awk -F "'" '{print$1}' \
-        >> "$log_file"
+      original_filename=$( \
+        echo "$moved_file" \
+          | awk -F 'Importing/' '{print $2}' \
+          | awk -F "'" '{print $1}'
+      )
+      updated_filename=$( \
+        echo "$moved_file" \
+          | awk -F 'review/' '{print $2}' \
+          | awk -F "'" '{print $1}'
+      )
+      sidecar_filename="${updated_filename/RAF/xmp}"
+      echo "$original_filename,$updated_filename,$sidecar_filename" >> "$log_file"
+    fi
   done
 }
 
