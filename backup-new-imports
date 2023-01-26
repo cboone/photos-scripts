@@ -12,7 +12,7 @@ function main {
 
   mkdir -p "$log_directory"
   touch "$log_file"
-  echo 'Original filename,Path to backed up original' >> "$log_file"
+  echo 'Original photo filename,Path to backed up original photo' >> "$log_file"
 
   mapfile -t exiftool_output < <( \
     exiftool \
@@ -32,17 +32,17 @@ function main {
     '-Directory<DateTimeOriginal' \
     "$newly_imported_photos"
 
-  for moved_file in "${exiftool_output[@]}"; do
+  for copied_file in "${exiftool_output[@]}"; do
     local original_filename
     local backup_path
-    
+
     original_filename=$( \
-      echo "$moved_file" \
+      echo "$copied_file" \
         | awk -F 'Importing/' '{print $2}' \
         | awk -F "' --> '" '{print $1}'
     )
     backup_path=$( \
-      echo "$moved_file" \
+      echo "$copied_file" \
         | awk -F 'Originals/' '{print "Originals/" $2}' \
         | awk -F "'" '{print $1}' \
     )

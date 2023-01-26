@@ -1,18 +1,51 @@
 #!/usr/bin/env bash
 
 function main {
+  local -r year="$(date +%Y)"
+  local -r log_directory=~/Pictures/Photographs/Logs/"$year"
+  local -r log_file="$log_directory/$(date-iso8601-ish)-rejected.csv"
   local -r photos=~/Pictures/Photographs
   local -r review_directory="$photos/Ready for review"
 
-  set -x
+  local -a exiftool_output
+
+  mkdir -p "$log_directory"
+  touch "$log_file"
+  echo 'Photo filename,Sidecar filename' >> "$log_file"
+
+  mapfile -t exiftool_output < <( \
+    # shellcheck disable=2016
+    exiftool \
+      -ignoreMinorErrors \
+      -quiet \
+      -dateFormat "$photos"/%Y/%Y-%m-%d/%%f.%%e \
+      '-TestName<DateTimeOriginal' \
+      "$review_directory"
+  )
+
+  printf '%s\n' "${exiftool_output[@]}"
 
   # shellcheck disable=2016
   exiftool \
     -ignoreMinorErrors \
-    -verbose \
+    -quiet \
     -dateFormat "$photos"/%Y/%Y-%m-%d/%%f.%%e \
-    '-filename<CreateDate' \
+    '-FileName<DateTimeOriginal' \
     "$review_directory"
-}
 
+  for selected_file in "${exiftool_output[@]}"; do
+    if [[ "$selected_file" =~ .RAF ]]; then
+      local photo_filename
+      local sidecar_filename
+
+      photo_filename=$( \
+        echo "$selected_file" \
+          | awk -F 'Photographs/' '{print $3}' \
+          | awk -F "'" '{print $1}'
+      )
+      sidecar_filename="${photo_filename/RAF/xmp}"
+      echo "$photo_filename,$sidecar_filename" >> "$log_file"
+    fi
+  done
+  }
 main

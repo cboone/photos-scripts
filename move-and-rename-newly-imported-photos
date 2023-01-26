@@ -11,7 +11,7 @@ function main {
 
   mkdir -p "$log_directory"
   touch "$log_file"
-  echo 'Original filename,Updated filename,Sidecar filename' >> "$log_file"
+  echo 'Original photo filename,Updated photo filename,Sidecar filename' >> "$log_file"
 
   mapfile -t exiftool_output < <( \
     exiftool \
