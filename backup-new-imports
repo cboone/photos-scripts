@@ -23,26 +23,24 @@ function main {
       "$newly_imported_photos"
   )
 
+  printf '%s\n' "${exiftool_output[@]}"
+
   exiftool \
     -ignoreMinorErrors \
-    -DateFormat "$originals"/%Y/%Y-%m-%d/%%f.%%e \
-    '-TestName<DateTimeOriginal' \
+    -out . \
+    -dateFormat "$originals"/%Y/%Y-%m-%d \
+    '-Directory<DateTimeOriginal' \
     "$newly_imported_photos"
 
-  # exiftool \
-  #   -ignoreMinorErrors \
-  #   -out . \
-  #   -dateFormat "$originals"/%Y/%Y-%m-%d \
-  #   '-Directory<DateTimeOriginal' \
-  #   "$newly_imported_photos"
-
   for moved_file in "${exiftool_output[@]}"; do
-    local original_filename=$( \
+    local original_filename
+    local backup_path
+    original_filename=$( \
       echo "$moved_file" \
         | awk -F 'Importing/' '{print $2}' \
         | awk -F "' --> '" '{print $1}'
     )
-    local backup_path=$( \
+    backup_path=$( \
       echo "$moved_file" \
         | awk -F 'Originals/' '{print "Originals/" $2}' \
         | awk -F "'" '{print $1}' \
