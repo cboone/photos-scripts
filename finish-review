@@ -6,7 +6,7 @@ function main {
   trash-rejected-photos
   move-and-import-selected-photos
   echo 'Done importing selects into Lightroom?'
-  read -p 'Press any key to move all reviewed photos or control-c to cancel... ' -n1 -r -s
+  read -p 'Press any key to move all remaining reviewed photos or control-c to cancel... ' -n1 -r -s
   echo ''
   move-reviewed-photos
 }

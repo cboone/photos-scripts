@@ -1,19 +1,68 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 function main {
+  local -r year="$(date +%Y)"
+  local -r log_directory=~/Pictures/Photographs/Logs/"$year"
+  local -r log_file="$log_directory/$(date-iso8601-ish)-rejected.csv"
   local -r cc_app_name="/Applications/Adobe Lightroom CC/Adobe Lightroom.app"
   local -r classic_app_name="/Applications/Adobe Lightroom Classic/Adobe Lightroom Classic.app"
-  local -r photos=~/Pictures/Photographs/'Ready for review'/Selected
+  local -r photos=~/Pictures/Photographs
+  local -r review_directory="$photos/Ready for review"
 
-  set -e
+  local -a exiftool_output
+  local -a full_paths_for_importing
 
-  open "$photos" -a "$classic_app_name"
+  mkdir -p "$log_directory"
+  touch "$log_file"
+  echo 'Path to photo file,Path to sidecar' >> "$log_file"
+
+  mapfile -t exiftool_output < <( \
+    # shellcheck disable=2016
+    exiftool \
+      -ignoreMinorErrors \
+      -quiet \
+      -if '$Rating ge 1' \
+      -dateFormat "$photos"/%Y/%Y-%m-%d/%%f.%%e \
+      '-TestName<DateTimeOriginal' \
+      "$review_directory"
+  )
+
+  printf '%s\n' "${exiftool_output[@]}"
+
+  for selected_file in "${exiftool_output[@]}"; do
+    if [[ "$selected_file" =~ .xmp ]]; then
+      local full_path_without_extension
+      local review_path_without_extension
+      local short_path
+
+      review_path_without_extension=$( \
+        echo "$selected_file" \
+          | awk -F "'" '{print $2}' \
+          | cut -d . -f 1
+      )
+      full_path_without_extension=$( \
+        echo "$selected_file" \
+          | awk -F "'" '{print $4}' \
+          | cut -d . -f 1
+      )
+      short_path=$( \
+        echo "$full_path_without_extension" \
+          | awk -F 'Photographs/' '{print $2}'
+      )
+
+      echo "$short_path.RAF,$short_path.xmp" >> "$log_file"
+      full_paths_for_importing+=("$full_path_without_extension.RAF" "$full_path_without_extension.xmp")
+      mv -v "$review_path_without_extension".{RAF,xmp} "$full_path_without_extension".{RAF,xmp}
+    fi
+  done
+
+  open  "${full_paths_for_importing[@]}" -a "$classic_app_name"
 
   echo 'Done importing selects into Lightroom Classic?'
   read -p 'Press any key to import selects into Lightroom CC or control-c to cancel... ' -n1 -r -s
   echo ''
 
-  open "$photos" -a "$cc_app_name"
+  open  "${full_paths_for_importing[@]}" -a "$cc_app_name"
 }
 
 main

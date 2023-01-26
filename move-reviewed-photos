@@ -11,7 +11,7 @@ function main {
 
   mkdir -p "$log_directory"
   touch "$log_file"
-  echo 'Photo filename,Sidecar filename' >> "$log_file"
+  echo 'Path to photo,Path to sidecar' >> "$log_file"
 
   mapfile -t exiftool_output < <( \
     # shellcheck disable=2016
@@ -28,24 +28,24 @@ function main {
   # shellcheck disable=2016
   exiftool \
     -ignoreMinorErrors \
-    -quiet \
     -dateFormat "$photos"/%Y/%Y-%m-%d/%%f.%%e \
     '-FileName<DateTimeOriginal' \
     "$review_directory"
 
-  for selected_file in "${exiftool_output[@]}"; do
-    if [[ "$selected_file" =~ .RAF ]]; then
-      local photo_filename
-      local sidecar_filename
+  for reviewed_file in "${exiftool_output[@]}"; do
+    if [[ "$reviewed_file" =~ .RAF ]]; then
+      local photo_path
+      local sidecar_path
 
-      photo_filename=$( \
-        echo "$selected_file" \
+      photo_path=$( \
+        echo "$reviewed_file" \
           | awk -F 'Photographs/' '{print $3}' \
           | awk -F "'" '{print $1}'
       )
-      sidecar_filename="${photo_filename/RAF/xmp}"
-      echo "$photo_filename,$sidecar_filename" >> "$log_file"
+      sidecar_path="${photo_path/RAF/xmp}"
+      echo "$photo_path,$sidecar_path" >> "$log_file"
     fi
   done
-  }
+}
+
 main
