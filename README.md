@@ -126,6 +126,8 @@ I suspect there are still ways for Lightroom Classic / the local catalog and Lig
 - Store xmp history snapshots
 - Automate xmp history snapshots
 - Create reconciliation scripts
+- Don't back up already datestamped photos
+- Don't rename already datestamped photos
 
 ## References
 
