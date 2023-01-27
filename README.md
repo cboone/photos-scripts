@@ -123,6 +123,9 @@ I suspect there are still ways for Lightroom Classic / the local catalog and Lig
 
 - Geotagging
 - Don't import photos that already exist in the catalog
+- Store xmp history snapshots
+- Automate xmp history snapshots
+- Create reconciliation scripts
 
 ## References
 
