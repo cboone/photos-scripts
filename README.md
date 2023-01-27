@@ -123,6 +123,7 @@ I suspect there are still ways for Lightroom Classic / the local catalog and Lig
 ## To do
 
 - Geotagging
+- Don't import photos that already exist in the catalog
 
 ## References
 
