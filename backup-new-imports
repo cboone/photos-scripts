@@ -23,6 +23,7 @@ function main {
     exiftool \
       -ignoreMinorErrors \
       -quiet \
+      -extension 'RAF' \
       -DateFormat "$originals"/%Y/%Y-%m-%d/%%f.%%e \
       '-TestName<DateTimeOriginal' \
       "$newly_imported_photos"
@@ -32,9 +33,10 @@ function main {
   printf '%s\n' "${exiftool_output[@]}"
 
   # Run it again for real to actually create the directories (as needed) and copy the files
-  # Using `-out dummy-directory` and `-Directory` here to copy the files, not move them; see: <https://exiftool.org/filename.html#ex5>
+  # Using `-out .` and `-Directory` here to copy the files, not move them; see: <https://exiftool.org/filename.html#ex5>
   exiftool \
     -ignoreMinorErrors \
+    -extension 'RAF' \
     -out . \
     -dateFormat "$originals"/%Y/%Y-%m-%d \
     '-Directory<DateTimeOriginal' \
