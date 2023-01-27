@@ -11,7 +11,7 @@
 
 ## Workflow
 
-NB: Path context is `~/Pictures/Photographs`. Directory structure overview [below](), details in [../Notes/directories.md]().
+NB: Path context is `~/Pictures/Photographs`. Directory structure overview [below](#directories), details in [../Notes/directories.md](https://github.com/cboone/photos-notes/blob/main/directories.md).
 
 1. I insert "Untitled" card with X-T5 raw photos
 2. On mount, Chronosync copies all new photos from the card to `./Importing`
@@ -22,9 +22,7 @@ NB: Path context is `~/Pictures/Photographs`. Directory structure overview [belo
       2. Create a structured log of all backed up photos in `Logs/YYYY/YYYYmmddTHHMMSS-imported.csv` (using today's date in ISO 8601-ish format)
    2. Then runs `update-new-imports-metadata` which uses `exiftool` to
       1. Update the copyright metadata to standard values
-      2. Update the exposure metadata to remove existing adjustments and set a linear (gamma 2.2) contrast curve, to create a flat-toned / linearized photo, following the FastRawViewer approach: <https://www.fastrawviewer.com/blog/red_flowers_photography_to-see-the-real-picture>
-      3. Update the lens metadata, iff the lens used (per file) appears to have been a manual lens without exif data (the Laowa 10mm)
-      4. Copy all metadata from the RAF file to an XMP sidecar file
+      2. Update the lens metadata, iff the lens used (per file) appears to have been a manual lens without exif data (the Laowa 10mm)
    3. Then runs `move-and-rename-newly-imported-photos` which uses `exiftool` to
       1. Move the photos to `Ready for Review/YYYY-MM-DD-FILENAME.{RAF,xmp}` (using the photo creation date)
       2. Create a structured log of all imported photos in `Logs/YYYY/YYYYmmddTHHMMSS-renamed.csv` (using today's date in ISO 8601-ish format)
@@ -33,6 +31,9 @@ NB: Path context is `~/Pictures/Photographs`. Directory structure overview [belo
          1. In which I review the photos by
             1. Marking selects with >= 1 star
             2. Marking rejects with -1 star
+         2. And FRV
+            1. Creates an xmp sidecar file for each reviewed photo
+            2. Updates the exposure settings to flatten / linearize the photo and adjust the exposure to the right
    5. Then runs `unmount-card` (without waiting for the manual review process)
 5. I run `finish-review` after reviewing the photos in FRV
    1. Which runs `trash-rejected-photos` which uses `exiftool` to
