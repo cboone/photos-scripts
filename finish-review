@@ -7,9 +7,12 @@ function main {
   move-and-import-selected-photos
 
   echo ''
-  echo '-----------------------------------------------------------------------------'
-  echo 'Done importing selects into Lightroom?'
-  read -p 'Press any key to move all remaining reviewed photos or control-c to cancel... ' -n1 -r -s
+  echo '----------------------------------------------------------------------'
+  echo '  Done importing selects into Lightroom?'
+  echo ''
+  echo '  Press any key to move all remaining reviewed photos to the catalog'
+  echo '    or control-c to cancel... '
+  read -p '----------------------------------------------------------------------' -n1 -r -s
   echo ''
 
   move-reviewed-photos

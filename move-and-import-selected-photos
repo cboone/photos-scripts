@@ -86,10 +86,14 @@ function main {
   open  "${full_paths_for_importing[@]}" -a "$classic_app_name"
 
   echo ''
-  echo '-----------------------------------------------------------------------------'
-  echo 'Done importing selects into Lightroom Classic?'
-  echo '!! Be sure to wait for the imports to sync with the cloud !!'
-  read -p 'Press any key to import selects into Lightroom CC or control-c to cancel... ' -n1 -r -s
+  echo '----------------------------------------------------------------------'
+  echo '  Done importing selects into Lightroom Classic?'
+  echo ''
+  echo '  !! Be sure to wait for the imports to sync with the cloud !!'
+  echo ''
+  echo '  Press any key to import selects into Lightroom CC'
+  echo '    or control-c to cancel... '
+  read -p '----------------------------------------------------------------------' -n1 -r -s
   echo ''
 
   open  "${full_paths_for_importing[@]}" -a "$cc_app_name"
