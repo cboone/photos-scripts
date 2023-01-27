@@ -10,7 +10,7 @@ function main {
   update-copyright-metadata "$newly_imported_photos"
   update-lens-metadata "$newly_imported_photos"
 
-  # create-sidecar "$newly_imported_photos"
+  create-sidecar "$newly_imported_photos"
   # set-exposure-metadata "$newly_imported_photos"
 }
 
