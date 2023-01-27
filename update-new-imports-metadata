@@ -1,93 +1,17 @@
 #!/usr/bin/env bash
 
-# Copy all metadata from the photo file to a newly created xmp sidecar file
-function copy-metadata-to-xmp {
-  local -r directory="$1"
-
-  # shellcheck disable=2016
-  exiftool \
-    -ignoreMinorErrors \
-    -preserve \
-    -verbose \
-    -extension RAF \
-    -out %d%f.xmp \
-    "$directory"
-}
-
-# Add copyright and creator details
-# Update exposure settings to flatten / linearize the image: <https://www.fastrawviewer.com/blog/red_flowers_photography_to-see-the-real-picture>
-function update-copyright-and-exposure-metadata {
-  local -r directory="$1"
-  local -r year=$(date +%Y)
-  local -r digital_source_type='http://cv.iptc.org/newscodes/digitalsourcetype/digitalCapture'
-  local -r email='rights@catamounthardware.com'
-  local -r name='Christopher Boone'
-  local -r rights="Copyright © $year $name"
-  local -r terms="No reproduction rights are granted without the express written permission of $name. No other usage is expressed or implied."
-  local -r url='https://catamounthardware.com'
-
-  # shellcheck disable=2016
-  exiftool \
-    -ignoreMinorErrors \
-    -overwrite_original_in_place \
-    -preserve \
-    -v2 \
-    -Copyright="$name" \
-    -Creator="$name" \
-    -CreatorWorkEmail="$email" \
-    -CreatorWorkURL="$url" \
-    -Credit="$name" \
-    -Rights="$rights" \
-    -UsageTerms="$terms" \
-    -WebStatement="$url" \
-    -XMP-xmpRights:Marked='True' \
-    -XMP-plus:ImageCreatorName="$name" \
-    -XMP-plus:CopyrightOwnerName="$name" \
-    -XMP-iptcExt:DigitalSourceType="$digital_source_type" \
-    -Brightness='0' \
-    -ProcessVersion='5.7' \
-    -Shadows='0' \
-    -ToneCurve='0, 0, 255, 255' \
-    -ToneCurveName='linear' \
-    -XMP-crs:Contrast='0' \
-    "$directory"
-}
-
-# Adds lens metadata iff the photo does not have a LensMake, which currently (2023-01-26) indicates it was taken with the Laowa 10mm
-function update-lens-metadata {
-  local -r directory="$1"
-  local -r lens_make='Venus Optics'
-  local -r lens_model='Laowa 10mm f/4'
-  local -r lens_info="$lens_make $lens_model"
-  local -r max_aperture='4'
-
-  # shellcheck disable=2016
-  exiftool \
-    -ignoreMinorErrors \
-    -overwrite_original_in_place \
-    -preserve \
-    -v2 \
-    -if 'not defined $LensMake or $LensMake eq ""' \
-    -LensInfo="$lens_info" \
-    -LensMake="$lens_make" \
-    -LensModel="$lens_model" \
-    -MaxApertureValue="$max_aperture" \
-    -XMP-crs:AutoLateralCA='1' \
-    -XMP-crs:VignetteAmount='+90' \
-    -XMP-crs:VignetteMidpoint='10' \
-    "$directory"
-}
-
 function main {
   local -r newly_imported_photos="$1"
 
-  echo "update-new-imports-metadata: Updating newly imported photos' copyright, exposure, and (as needed) lens metadata, then copying all metadata from the photo files to newly created xmp sidecar files"
+  echo "update-new-imports-metadata: Updating newly imported photos' copyright and (as needed) lens metadata"
 
   set -x
 
-  update-copyright-and-exposure-metadata "$newly_imported_photos"
+  update-copyright-metadata "$newly_imported_photos"
   update-lens-metadata "$newly_imported_photos"
-  copy-metadata-to-xmp "$newly_imported_photos"
+
+  # create-sidecar "$newly_imported_photos"
+  # set-exposure-metadata "$newly_imported_photos"
 }
 
 main "$1"

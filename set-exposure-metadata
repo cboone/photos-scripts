@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+
+# Set sidecar exposure settings to flatten / linearize the image: <https://www.fastrawviewer.com/blog/red_flowers_photography_to-see-the-real-picture>
+function main {
+  local -r directory="$1"
+
+  # shellcheck disable=2016
+  exiftool \
+    -ignoreMinorErrors \
+    -overwrite_original_in_place \
+    -v2 \
+    -ext 'xmp' \
+    -XMP-crs:Brightness='0' \
+    -XMP-crs:Exposure='0' \
+    -XMP-crs:ProcessVersion='5.7' \
+    -XMP-crs:Shadows='0' \
+    -XMP-crs:ToneCurve='0, 0, 255, 255' \
+    -XMP-crs:ToneCurveName='linear' \
+    -XMP-crs:Contrast='0' \
+    "$directory"
+
+    # -XMP-crs:ToneCurveBlue='0, 0, 255, 255' \
+    # -XMP-crs:ToneCurveGreen='0, 0, 255, 255' \
+    # -XMP-crs:ToneCurveRed='0, 0, 255, 255' \
+
+    # -XMP-crs:HasSettings='True' \
+
+    # -Blacks2012='0' \
+    # -Exposure2012='0' \
+    # -Highlights2012='0' \
+    # -ProcessVersion='11' \
+    # -Shadows2012='0' \
+    # -Whites2012='0' \
+    # -XMP-crs:Contrast2012='0' \
+}
+
+main "$1"

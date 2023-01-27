@@ -1,0 +1,34 @@
+#!/usr/bin/env bash
+
+# Update copyright and creator details
+function main {
+  local -r directory="$1"
+  local -r year=$(date +%Y)
+  local -r digital_source_type='http://cv.iptc.org/newscodes/digitalsourcetype/digitalCapture'
+  local -r email='rights@catamounthardware.com'
+  local -r name='Christopher Boone'
+  local -r rights="Copyright © $year $name"
+  local -r terms="No reproduction rights are granted without the express written permission of $name. No other usage is expressed or implied."
+  local -r url='https://catamounthardware.com'
+
+  # shellcheck disable=2016
+  exiftool \
+    -ignoreMinorErrors \
+    -overwrite_original_in_place \
+    -v2 \
+    -Copyright="$name" \
+    -Creator="$name" \
+    -CreatorWorkEmail="$email" \
+    -CreatorWorkURL="$url" \
+    -Credit="$name" \
+    -Rights="$rights" \
+    -UsageTerms="$terms" \
+    -WebStatement="$url" \
+    -XMP-xmpRights:Marked='True' \
+    -XMP-plus:ImageCreatorName="$name" \
+    -XMP-plus:CopyrightOwnerName="$name" \
+    -XMP-iptcExt:DigitalSourceType="$digital_source_type" \
+    "$directory"
+}
+
+main "$1"

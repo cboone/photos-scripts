@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+
+# Adds lens metadata iff the photo does not have a LensMake, which currently (2023-01-26) indicates it was taken with the Laowa 10mm
+function main {
+  local -r directory="$1"
+  local -r lens_make='Venus Optics'
+  local -r lens_model='Laowa 10mm f/4'
+  local -r lens_info="$lens_make $lens_model"
+  local -r max_aperture='4'
+
+  # shellcheck disable=2016
+  exiftool \
+    -ignoreMinorErrors \
+    -overwrite_original_in_place \
+    -v2 \
+    -extension 'RAF' \
+    -if 'not defined $LensMake or $LensMake eq ""' \
+    -ExifIFD:LensInfo="$lens_info" \
+    -ExifIFD:LensMake="$lens_make" \
+    -ExifIFD:LensModel="$lens_model" \
+    -ExifIFD:MaxApertureValue="$max_aperture" \
+    "$directory"
+}
+
+main "$1"
