@@ -2,7 +2,7 @@
 
 function main {
   local -r review_app='FastRawViewer.app'
-  local -r photos=~/Pictures/Photographs/'Ready for review'
+  local -r photos=~/Pictures/Photographs/Reviewing
 
   echo "open-new-imports-for-review: Opening all newly imported photos in $review_app"
 

@@ -5,11 +5,11 @@ function main {
   local -r imports_directory=~/Pictures/Photographs/Importing
   local -r log_directory=~/Pictures/Photographs/Logs/"$year"
   local -r log_file="$log_directory/$(date-iso8601-ish)-renamed.csv"
-  local -r review_directory=~/Pictures/Photographs/'Ready for review'
+  local -r review_directory=~/Pictures/Photographs/Reviewing
 
   local -a exiftool_output
 
-  echo 'move-and-rename-newly-imported-photos: Moving all photo and sidecar files from Photographs/Importing/*.{RAF,xmp} to Photographs/Ready for review/YYYY-mm-dd-*.{RAF,xmp}'
+  echo 'move-and-rename-newly-imported-photos: Moving all photo and sidecar files from Photographs/Importing/*.{RAF,xmp} to Photographs/Reviewing/YYYY-mm-dd-*.{RAF,xmp}'
   echo "move-and-rename-newly-imported-photos: Logging the changes to $log_file"
 
   mkdir -p "$log_directory"
@@ -37,7 +37,7 @@ function main {
     "$imports_directory"
 
   # Each line looks like (with either .RAF or .xmp):
-  # '/Users/hpg/Pictures/Photographs/Importing/2023-01-24-DSCF9991.RAF' --> '/Users/hpg/Pictures/Photographs/Ready for review/2023-01-24-2023-01-24-DSCF9991.RAF'
+  # '/Users/hpg/Pictures/Photographs/Importing/2023-01-24-DSCF9991.RAF' --> '/Users/hpg/Pictures/Photographs/Reviewing/2023-01-24-2023-01-24-DSCF9991.RAF'
   for moved_file in "${exiftool_output[@]}"; do
     # Simpler to only deal with the .RAFs, then add the .xmp back in below
     if [[ "$moved_file" =~ .RAF ]]; then

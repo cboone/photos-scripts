@@ -5,11 +5,11 @@ function main {
   local -r log_directory=~/Pictures/Photographs/Logs/"$year"
   local -r log_file="$log_directory/$(date-iso8601-ish)-reviewed.csv"
   local -r photos=~/Pictures/Photographs
-  local -r review_directory="$photos/Ready for review"
+  local -r review_directory="$photos/Reviewing"
 
   local -a exiftool_output
 
-  echo "move-reviewed-photos: Moving all remaining reviewed photos (0 rating) and their sidecars from 'Ready for review/YYYY-mm-dd-*.{RAF,xmp}' to their permanent home at 'YYYY/YYYY-mm-dd/YYYY-mm-dd-*.{RAF,xmp}'"
+  echo "move-reviewed-photos: Moving all remaining reviewed photos (0 rating) and their sidecars from 'Reviewing/YYYY-mm-dd-*.{RAF,xmp}' to their permanent home at 'YYYY/YYYY-mm-dd/YYYY-mm-dd-*.{RAF,xmp}'"
   echo "move-reviewed-photos: Logging the changes to $log_file"
 
   mkdir -p "$log_directory"
@@ -40,7 +40,7 @@ function main {
     "$review_directory"
 
   # Each line looks like:
-  #   '/Users/hpg/Pictures/Photographs/Ready for review/2023-01-24-DSCF9993.RAF' --> '/Users/hpg/Pictures/Photographs/2023/2023-01-24/2023-01-24-DSCF9993.RAF'
+  #   '/Users/hpg/Pictures/Photographs/Reviewing/2023-01-24-DSCF9993.RAF' --> '/Users/hpg/Pictures/Photographs/2023/2023-01-24/2023-01-24-DSCF9993.RAF'
   for reviewed_file in "${exiftool_output[@]}"; do
     local photo_path
     local sidecar_path
