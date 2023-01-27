@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Create empty sidecar file for RAF photos in specified directory
+# Create sidecar file for RAF photos in specified directory, and copy all metadata from photo to sidecar
 function main {
   local -r directory="$1"
 
@@ -9,10 +9,8 @@ function main {
     -ignoreMinorErrors \
     -verbose \
     -extension 'RAF' \
-    -out '%d%f.xmp' \
-    '-XMP-exif:DateTimeOriginal<ExifIFD:DateTimeOriginal' \
-    -XMP-photoshop:SidecarForExtension='RAF' \
-    '-XMP-xmp:CreateDate<ExifIFD:CreateDate' \
+    -tagsFromFile '@' \
+    -srcfile '%d%f.xmp' \
     "$directory"
 }
 
