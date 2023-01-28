@@ -128,6 +128,7 @@ I suspect there are still ways for Lightroom Classic / the local catalog and Lig
 - Create reconciliation scripts
 - Don't back up already datestamped photos
 - Don't rename already datestamped photos
+- ~~Subtract one star before import~~
 
 ## References
 

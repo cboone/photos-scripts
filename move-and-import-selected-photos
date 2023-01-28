@@ -73,14 +73,21 @@ function main {
     echo "$short_path.RAF,$short_path.xmp" >> "$log_file"
 
     # Keep track of the full destination paths (both photos and sidecars), for importing into the apps below
-    full_paths_for_importing+=("$full_path_without_extension.RAF" "$full_path_without_extension.xmp")
+    full_paths_for_importing+=("$full_path_without_extension".RAF "$full_path_without_extension".xmp)
 
     # Ensure the destination directory exists
     mkdir -p "$destination_directory_path"
 
     # Move the photo and sidecar files from the review folder to their permanent home
-    mv -v "$review_path_without_extension".RAF "$full_path_without_extension".RAF
-    mv -v "$review_path_without_extension".xmp "$full_path_without_extension".xmp
+    mv -v "$review_path_without_extension".{RAF,xmp} "$destination_directory_path"
+
+    # Subtract 1 from the photo's rating (stored in the sidecar)
+    # shellcheck disable=2016
+    exiftool \
+      -ignoreMinorErrors \
+      -overwrite_original_in_place \
+      -'XMP-xmp:Rating<${XMP-xmp:Rating#;$_-=1}' \
+      "$full_path_without_extension".xmp
   done
 
   open  "${full_paths_for_importing[@]}" -a "$classic_app_name"
