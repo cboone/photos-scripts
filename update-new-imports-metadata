@@ -11,7 +11,6 @@ function main {
   update-lens-metadata "$newly_imported_photos"
 
   create-sidecar "$newly_imported_photos"
-  # set-exposure-metadata "$newly_imported_photos"
 }
 
 main "$1"
