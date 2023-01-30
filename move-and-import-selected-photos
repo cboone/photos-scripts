@@ -90,6 +90,7 @@ function main {
       "$full_path_without_extension".xmp
   done
 
+  echo "+ open  \"${full_paths_for_importing[*]}\" -a \"$classic_app_name\""
   open  "${full_paths_for_importing[@]}" -a "$classic_app_name"
 
   echo ''
@@ -103,6 +104,7 @@ function main {
   read -p '----------------------------------------------------------------' -n1 -r -s
   echo ''
 
+  echo "open  \"${full_paths_for_importing[*]}\" -a \"$cc_app_name\""
   open  "${full_paths_for_importing[@]}" -a "$cc_app_name"
 }
 
