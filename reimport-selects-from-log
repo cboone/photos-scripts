@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+
+function main {
+  local -r year="$(date +%Y)"
+  local -r photos=~/Pictures/Photographs
+  local -r log_directory="$photos"/Logs/"$year"
+
+  local log_file="$log_directory/$1"
+  [[ ! -f "$log_file" ]] \
+    && log_file="$(find "$log_directory"/*-selected.csv | tail -n 1)"
+
+  local -a paths_for_importing
+  mapfile -t paths_for_importing < <(qsv behead "$log_file" | qsv fmt -t ' ' | tr ' ' '\n')
+  local -ar full_paths_for_importing=("${paths_for_importing[@]/#/$photos/}")
+
+  echo "reimport-selects-from-log: Re-importing selected photos from $log_file"
+
+  import-into-lightrooms "${full_paths_for_importing[@]}"
+}
+
+main "$1"

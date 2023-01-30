@@ -4,8 +4,6 @@ function main {
   local -r year="$(date +%Y)"
   local -r log_directory=~/Pictures/Photographs/Logs/"$year"
   local -r log_file="$log_directory/$(date-iso8601-ish)-selected.csv"
-  local -r cc_app_name="/Applications/Adobe Lightroom CC/Adobe Lightroom.app"
-  local -r classic_app_name="/Applications/Adobe Lightroom Classic/Adobe Lightroom Classic.app"
   local -r photos=~/Pictures/Photographs
   local -r review_directory="$photos/Reviewing"
 
@@ -90,22 +88,7 @@ function main {
       "$full_path_without_extension".xmp
   done
 
-  echo "+ open  \"${full_paths_for_importing[*]}\" -a \"$classic_app_name\""
-  open  "${full_paths_for_importing[@]}" -a "$classic_app_name"
-
-  echo ''
-  echo '----------------------------------------------------------------'
-  echo '  Done importing selects into Lightroom Classic?'
-  echo ''
-  echo '  !! Be sure to wait for the imports to sync with the cloud !!'
-  echo ''
-  echo '  Press any key to import selects into Lightroom CC'
-  echo '    or control-c to cancel... '
-  read -p '----------------------------------------------------------------' -n1 -r -s
-  echo ''
-
-  echo "open  \"${full_paths_for_importing[*]}\" -a \"$cc_app_name\""
-  open  "${full_paths_for_importing[@]}" -a "$cc_app_name"
+  import-into-lightrooms "${full_paths_for_importing[@]}"
 }
 
 main
