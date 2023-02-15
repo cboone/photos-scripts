@@ -5,6 +5,16 @@ function main {
 
   trash-rejected-photos
   move-and-import-selected-photos
+
+  echo ''
+  echo '---------------------------------------------------------------------------------------------'
+  echo '  Done importing selects into Lightroom CC?'
+  echo ''
+  echo '  Press any key to move all remaining photos (non-selected and non-rejected) to the catalog'
+  echo '    or control-c to cancel... '
+  echo '---------------------------------------------------------------------------------------------'
+  read -p '' -n1 -r -s
+
   move-reviewed-photos
 }
 

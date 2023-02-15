@@ -18,10 +18,10 @@ function main {
   echo ''
   echo '  Press any key to import selects into Lightroom CC'
   echo '    or control-c to cancel... '
-  read -p '----------------------------------------------------------------' -n1 -r -s
-  echo ''
-  echo ''
+  echo '----------------------------------------------------------------'
+  read -p '' -n1 -r -s
 
+  echo ''
   echo 'import-into-lightrooms: Opening photo and sidecar files in Lightroom CC'
   echo "open  ${full_paths_for_importing[*]} -a \"$cc_app_name\""
   open  "${full_paths_for_importing[@]}" -a "$cc_app_name"
