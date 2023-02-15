@@ -13,9 +13,21 @@ function main {
   mapfile -t paths_for_importing < <(qsv behead "$log_file" | qsv fmt -t ' ' | tr ' ' '\n')
   local -ar full_paths_for_importing=("${paths_for_importing[@]/#/$photos/}")
 
-  echo "reimport-selects-from-log: Re-importing selected photos from $log_file"
+  local -a existent_full_paths_for_importing
+  local -a non_existent_full_paths_for_importing
+  for path in "${full_paths_for_importing[@]}"; do
+    if [[ -f "$path" ]]; then
+      existent_full_paths_for_importing+=("$path")
+    else
+      non_existent_full_paths_for_importing+=("$path")
+    fi
+  done
 
-  import-into-lightrooms "${full_paths_for_importing[@]}"
+  echo "reimport-selects-from-log: Re-importing selected photos from $log_file"
+  echo "reimport-selects-from-log: The following files no longer exist, and are being ignored:"
+  printf '%s\n' "${non_existent_full_paths_for_importing[@]}"
+
+  import-into-lightrooms "${existent_full_paths_for_importing[@]}"
 }
 
 main "$1"
