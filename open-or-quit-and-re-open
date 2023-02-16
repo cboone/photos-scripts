@@ -1,0 +1,20 @@
+#!/bin/bash
+
+function main {
+  local -r app_name="$1"
+  local -r photos="$2"
+
+  if pgrep "$app_name" &>/dev/null; then
+    echo "open-or-quit-and-re-open: '$app_name' currently running, telling it to quit, then re-opening it..."
+    osascript -e "quit app \"$app_name\""
+    sleep 5
+  else
+    echo "open-or-quit-and-re-open: '$app_name' not currently running, opening it..."
+  fi
+
+  set -ex
+
+  open "$photos" -a "/Applications/$app_name.app"
+}
+
+main "$1" "$2"

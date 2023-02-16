@@ -1,14 +1,14 @@
 #!/bin/bash
 
 function main {
-  local -r review_app='FastRawViewer.app'
+  local -r review_app='FastRawViewer'
   local -r photos=~/Pictures/Photographs/Reviewing
 
   echo "open-new-imports-for-review: Opening all newly imported photos in $review_app"
 
   set -ex
 
-  open "$photos" -a "/Applications/$review_app"
+  open-or-quit-and-re-open "$review_app" "$photos"
 }
 
 main
