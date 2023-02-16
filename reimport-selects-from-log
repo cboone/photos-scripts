@@ -15,17 +15,22 @@ function main {
 
   local -a existent_full_paths_for_importing
   local -a non_existent_full_paths_for_importing
+  local some_files_are_missing
   for path in "${full_paths_for_importing[@]}"; do
     if [[ -f "$path" ]]; then
       existent_full_paths_for_importing+=("$path")
     else
+      some_files_are_missing='true'
       non_existent_full_paths_for_importing+=("$path")
     fi
   done
 
   echo "reimport-selects-from-log: Re-importing selected photos from $log_file"
-  echo "reimport-selects-from-log: The following files no longer exist, and are being ignored:"
-  printf '%s\n' "${non_existent_full_paths_for_importing[@]}"
+
+  if [[ "$some_files_are_missing" ]]; then
+    echo "reimport-selects-from-log: The following files no longer exist, and are being ignored:"
+    printf '%s\n' "${non_existent_full_paths_for_importing[@]}"
+  fi
 
   import-into-lightrooms "${existent_full_paths_for_importing[@]}"
 }
