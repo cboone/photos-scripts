@@ -1,0 +1,47 @@
+#!/usr/bin/env bash
+
+function main {
+  local -r date_arg="$2"
+  local -r tracks_dir="$1"
+
+  local -a tracks
+
+  echo "download-tracks: Getting list of tracks for --match-date '$date_arg'..."
+  mapfile -t tracks < <( \
+    gaiagps track list \
+      --format '%(id)s|%(created)s|%(title)s' \
+      --match-date "$date_arg" \
+  )
+
+  if (( ${#tracks[@]} == 0 )); then
+    echo "download-tracks: No matching tracks found"
+    exit 0
+  fi
+
+  echo ''
+
+  for track in "${tracks[@]}"; do
+    local track_created_as_dirs
+    local -a track_details
+
+    mapfile -t track_details < <( echo "$track" | tr '|' '\n' )
+    local track_id="${track_details[0]}"
+    local track_created_at="${track_details[1]}"
+    local track_title="${track_details[2]}"
+    track_created_as_dirs=$( gdate -d "$track_created_at" +'%Y/%Y-%m/%Y-%m-%d')
+    local track_filename="$track_id.gpx"
+    local track_dir="$tracks_dir/$track_created_as_dirs"
+    local track_path="$track_dir/$track_filename"
+
+    if [[ -f "$track_path" ]]; then
+      echo "download-tracks: '$track_title' already downloaded, skipping '$track_filename'"
+    else
+      echo "download-tracks: Downloading '$track_title' as '$track_filename'"
+      mkdir -p "$track_dir"
+      gaiagps track export --format 'gpx' "$track_id" "$track_path"
+      echo ''
+    fi
+  done
+}
+
+main "$1" "$2"
