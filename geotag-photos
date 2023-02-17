@@ -1,0 +1,43 @@
+#!/usr/bin/env bash
+
+function main {
+  local -a day_dirs
+  local -a geotag_args
+  local -r photos_dir="$1"
+  local -r tracks_dir=~/Documents/'Gaia GPS'/Tracks
+
+  echo "geotag-photos: Getting dates for photos in '$photos_dir' and its subdirectories..."
+
+  # Use each photo's DateTimeOriginal (create date) to generate a list of day directories, then unique them:
+  #   2023/2023-02/2023-02-05
+  mapfile -t day_dirs < <( \
+    exiftool \
+      -ignoreMinorErrors \
+      -quiet \
+      -recurse \
+      -table \
+      -dateFormat '%Y/%Y-%m/%Y-%m-%d' \
+      -DateTimeOriginal \
+      "$photos_dir" \
+        | sort \
+        | uniq \
+  )
+
+  # Turn that list of day directories into -geotag args for passing back to exiftool:
+  #   -geotag /Users/hpg/Documents/Gaia GPS/Tracks/2023/2023-02/2023-02-05/*.gpx
+  for day_dir in "${day_dirs[@]}"; do
+    geotag_args+=('-geotag' "${day_dir/#*/$tracks_dir\/&\/\*.gpx}")
+  done
+
+  set -x
+
+  # Geotag all the photos in the specified directory using all the corresponding GPX tracks:
+  exiftool \
+    -ignoreMinorErrors \
+    -overwrite_original_in_place \
+    -recurse \
+    "${geotag_args[@]}" \
+    "$photos_dir"
+}
+
+main "$1"

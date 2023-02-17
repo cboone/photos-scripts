@@ -3,13 +3,13 @@
 function main {
   local -r newly_imported_photos="$1"
 
-  echo "update-new-imports-metadata: Updating newly imported photos' copyright and (as needed) lens metadata"
+  echo "update-new-imports-metadata: Updating newly imported photos' copyright, geotags, and (as needed) lens metadata"
 
   set -x
 
   update-copyright-metadata "$newly_imported_photos"
   update-lens-metadata "$newly_imported_photos"
-
+  download-tracks-and-geotag-photos "$newly_imported_photos"
   create-sidecar "$newly_imported_photos"
 }
 
