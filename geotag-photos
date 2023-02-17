@@ -4,7 +4,7 @@ function main {
   local -a day_dirs
   local -a geotag_args
   local -r photos_dir="$1"
-  local -r tracks_dir=~/Documents/'Gaia GPS'/Tracks
+  local -r tracks_base_dir=~/Documents/'Gaia GPS'/Tracks/
 
   echo "geotag-photos: Getting dates for photos in '$photos_dir' and its subdirectories..."
 
@@ -26,16 +26,31 @@ function main {
   # Turn that list of day directories into -geotag args for passing back to exiftool:
   #   -geotag /Users/hpg/Documents/Gaia GPS/Tracks/2023/2023-02/2023-02-05/*.gpx
   for day_dir in "${day_dirs[@]}"; do
-    geotag_args+=('-geotag' "${day_dir/#*/$tracks_dir\/&\/\*.gpx}")
+    local tracks_dir="${day_dir/#/$tracks_base_dir}"
+
+    # Only include day directory globs that actually match existent tracks:
+    if ls "$tracks_dir/"*.gpx &>/dev/null; then
+      echo "geotag-photos: GPX track found for photos dated $(echo "$day_dir" | awk -F '/' '{ print $3 }')"
+      geotag_args+=('-geotag' "$tracks_dir/*.gpx")
+    else
+      echo "geotag-photos: No GPX tracks found for photos dated $(echo "$day_dir" | awk -F '/' '{ print $3 }')"
+    fi
   done
+
+  if (( ${#geotag_args[@]} == 0 )); then
+    echo "geotag-photos: No GPX tracks found, skipping geotagging"
+    exit 0
+  fi
 
   set -x
 
   # Geotag all the photos in the specified directory using all the corresponding GPX tracks:
+  # shellcheck disable=2016
   exiftool \
     -ignoreMinorErrors \
     -overwrite_original_in_place \
     -recurse \
+    -if 'not defined $GPSLatitude or $GPSLatitude eq ""' \
     "${geotag_args[@]}" \
     "$photos_dir"
 }
