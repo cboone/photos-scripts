@@ -19,7 +19,7 @@ function main {
   echo '  Press any key to import selects into Lightroom CC'
   echo '    or control-c to cancel... '
   echo '----------------------------------------------------------------'
-  read -p '' -n1 -r -s
+  read -p '' -n1 -r -s < /dev/tty
 
   echo ''
   echo 'import-into-lightrooms: Opening photo and sidecar files in Lightroom CC'

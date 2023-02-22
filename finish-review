@@ -13,7 +13,7 @@ function main {
   echo '  Press any key to move all remaining photos (non-selected and non-rejected) to the catalog'
   echo '    or control-c to cancel... '
   echo '---------------------------------------------------------------------------------------------'
-  read -p '' -n1 -r -s
+  read -p '' -n1 -r -s < /dev/tty
 
   move-reviewed-photos
 }
