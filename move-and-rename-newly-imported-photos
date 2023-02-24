@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+# Moves all newly imported photos and their newly created sidecars into the Reviewing directory and renames them with datestamps prepended
 function main {
   local -r year="$(date +%Y)"
   local -r imports_directory=~/Pictures/Photographs/Importing
@@ -40,7 +41,7 @@ function main {
   # '/Users/hpg/Pictures/Photographs/Importing/2023-01-24-DSCF9991.RAF' --> '/Users/hpg/Pictures/Photographs/Reviewing/2023-01-24-2023-01-24-DSCF9991.RAF'
   for moved_file in "${exiftool_output[@]}"; do
     # Simpler to only deal with the .RAFs, then add the .xmp back in below
-    if [[ "$moved_file" =~ .RAF ]]; then
+    if [[ "$moved_file" =~ RAF ]]; then
       local original_filename
       local updated_filename
       local sidecar_filename
@@ -49,15 +50,15 @@ function main {
       #   DSCF9991.RAF
       original_filename=$( \
         echo "$moved_file" \
-          | awk -F 'Importing/' '{print $2}' \
-          | awk -F "'" '{print $1}'
+          | awk -F 'Importing/' '{ print $2 }' \
+          | awk -F "'" '{ print $1 }'
       )
 
       # Get the updated photo filename:
       #   2023-01-24-DSCF9991.RAF
       updated_filename=$( \
         echo "$moved_file" \
-          | awk -F 'review/' '{print $2}' \
+          | awk -F 'Reviewing/' '{print $2}' \
           | awk -F "'" '{print $1}'
       )
 

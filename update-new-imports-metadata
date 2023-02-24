@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 function main {
-  local -r newly_imported_photos="$1"
+  local -r newly_imported_photos=~/Pictures/Photographs/Importing
 
   echo "update-new-imports-metadata: Updating newly imported photos' copyright, geotags, and (as needed) lens metadata"
 
@@ -13,4 +13,4 @@ function main {
   create-sidecar "$newly_imported_photos"
 }
 
-main "$1"
+main

@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+# Back up all newly imported photos
 function main {
   local -r year="$(date +%Y)"
   local -r log_directory=~/Pictures/Photographs/Logs/"$year"

@@ -6,7 +6,7 @@ function main {
   set -x
 
   backup-new-imports
-  update-new-imports-metadata '/Users/hpg/Pictures/Photographs/Importing'
+  update-new-imports-metadata
   move-and-rename-newly-imported-photos
   open-new-imports-for-review
   unmount-card
