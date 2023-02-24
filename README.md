@@ -14,28 +14,31 @@
 NB: Path context is `~/Pictures/Photographs`. Directory structure overview [below](#directories), details in [../Notes/directories.md](https://github.com/cboone/photos-notes/blob/main/directories.md).
 
 1. I insert "Untitled" card with X-T5 raw photos
-2. On mount, Chronosync copies all new photos from the card to `./Importing`
-3. Then runs `finalize-x-t5-card-sync-chronosync-wrapper`
-4. Which runs `finalize-x-t5-card-sync` with timestamped logging to `./Scripts/logs` (which can be viewed using `less-log` or `tail-log`)
-   1. Which runs `backup-new-imports` which uses `exiftool` to
-      1. Copy all photos in `Importing/` to `Originals/YYYY/YY-MM-DD/` (using the photo creation date)
-      2. Create a structured log of all backed up photos in `Logs/YYYY/YYYYmmddTHHMMSS-imported.csv` (using today's date in ISO 8601-ish format)
-   2. Then runs `update-new-imports-metadata` which uses `exiftool` to
-      1. Update the copyright metadata to standard values
-      2. Update the lens metadata, iff the lens used (per file) appears to have been a manual lens without exif data (the Laowa 10mm)
-   3. Then runs `move-and-rename-newly-imported-photos` which uses `exiftool` to
-      1. Move the photos to `Reviewing/YYYY-MM-DD-FILENAME.{RAF,xmp}` (using the photo creation date)
-      2. Create a structured log of all imported photos in `Logs/YYYY/YYYYmmddTHHMMSS-renamed.csv` (using today's date in ISO 8601-ish format)
-   4. Then runs `open-new-imports-for-review`
-      1. Which opens `Reviewing/` in FastRawViewer
-         1. In which I review the photos by
-            1. Marking selects with >= 1 star
-            2. Marking rejects with -1 star
-         2. And FRV
-            1. Creates an xmp sidecar file for each reviewed photo
-            2. Updates the exposure settings to flatten / linearize the photo and adjust the exposure to the right
-   5. Then runs `unmount-card` (without waiting for the manual review process)
-5. I run `finish-review` after reviewing the photos in FRV
+2. On mount, `Chronosync` copies all new photos from the card to `Importing`
+   1. Then runs `finalize-x-t5-card-sync-chronosync-wrapper`
+   2. Which runs `finalize-x-t5-card-sync` with timestamped logging to `Scripts/logs` (which can be viewed using `less-log` or `tail-log`)
+      1. Which runs `backup-new-imports` which uses `exiftool` to
+         1. Copy all photos in `Importing/` to `Originals/YYYY/YY-MM-DD/` (using the photo creation date)
+         2. Create a structured log of all backed up photos in `Logs/YYYY/YYYYmmddTHHMMSS-imported.csv` (using today's date in ISO 8601-ish format)
+      2. Then runs `update-new-imports-metadata`
+         1. Which runs `update-copyright-metadata` which uses `exiftool` to update the copyright metadata to standard values
+         2. Then runs `update-lens-metadata` to update the lens metadata, iff the lens used (per file) appears to have been a manual lens without exif data (the Laowa 10mm)
+         3. Then runs `download-tracks-and-geotag-photos`
+            1. Which runs `download-tracks`
+               1. Which uses `gaiagps` to download all tracks newly created within the past week and save them as GPF files in `~/Documents/Gaia GPS/Tracks`
+            2. Then runs `geotag-photos` which uses `exiftool` to geotag all newly imported photos
+         4. Then runs `create-sidecar` which uses `exiftool` to copy all metadat from the RAF photo file to a new xmp sidecar file
+      3. Then runs `move-and-rename-newly-imported-photos` which uses `exiftool` to
+         1. Move the files to `Reviewing/YYYY-MM-DD-FILENAME.{RAF,xmp}` (using the photo creation date)
+         2. Create a structured log of all imported photos in `Logs/YYYY/YYYYmmddTHHMMSS-renamed.csv` (using today's date in ISO 8601-ish format)
+      4. Then runs `open-new-imports-for-review`
+         1. Which quits `FastRawViewer` if it's already running (to reset the date filters)
+         2. Which opens `Reviewing/` in `FastRawViewer`
+            1. In which I review the photos by
+               1. Marking selects with >= 1 star
+               2. Marking rejects with -1 star
+      5. Then runs `unmount-card` (without waiting for the manual review process)
+3. After reviewing the photos in `FastRawViewer`, I run `finish-review`
    1. Which runs `trash-rejected-photos` which uses `exiftool` to
       1. Find all photos with -1 stars in `Ready to review/`
       2. Pass them to `trash` for soft deletion
@@ -49,16 +52,16 @@ NB: Path context is `~/Pictures/Photographs`. Directory structure overview [belo
       3. Waits for me to "press any key", which I do after
          1. I import the photos into the local Lightroom catalog
          2. Mark them for syncing to the Lightroom cloud, via adding them to a synced collection
-         3. Update their process version to 5 (2019 / current)
       4. Opens the selected photos and their sidecars in Adobe Lightroom CC
-         1. Then I import the photos into the Lightroom Cloud (again), which replaces the Smart Previews generated by Lightroom Classic with the real RAF files
-      5. And, without waiting for me, then runs `move-reviewed-photos` which uses `exiftool` to
-         1. Move all remaining files (RAF and xmp) from `Ready to review/` to `YYYY/` (using the photo creation date)
+         1. Then I import the photos into the Lightroom cloud (again), which replaces the Smart Previews generated by Lightroom Classic with the real RAF files
+      5. Waits for me to "press any key", which I do after I confirm the photos have been imported into Lightroom CC successfully
+      6. Then runs `move-reviewed-photos` which uses `exiftool` to
+         1. Move all remaining files (RAF and xmp) from `Reviewing/` to `YYYY/` (using the photo creation date)
          2. Create a structured log of all reviewed (but not selected or rejected) photos in `Logs/YYYY/YYYYmmddTHHMMSS-reviewed.csv` (using today's date)
 
 ## Directories
 
-Overview of relevant directories, details in [../Notes/directories.md]():
+Overview of relevant directories, details in [../Notes/directories.md](https://github.com/cboone/photos-notes/blob/main/directories.md):
 
 - ~/Pictures/
   - Photographs/
@@ -121,7 +124,7 @@ I suspect there are still ways for Lightroom Classic / the local catalog and Lig
 
 ## To do
 
-- Geotagging
+- ~~Geotagging~~
 - Don't import photos that already exist in the catalog
 - Store xmp history snapshots
 - Automate xmp history snapshots
@@ -136,5 +139,7 @@ I suspect there are still ways for Lightroom Classic / the local catalog and Lig
 
 ## Tools
 
-- `qsv`: <https://github.com/jqnatividad/qsv>, `brew install qsv`
+- `ChronoSync`: <https://www.econtechnologies.com/chronosync/overview.html>
+- `FastRawViewer`: <https://www.fastrawviewer.com>
+- `gaiagps`: <https://github.com/kk7ds/gaiagpsclient>
 - `trash`: <https://hasseg.org/trash/>, `brew install trash`
