@@ -25,7 +25,7 @@ NB: Path context is `~/Pictures/Photographs`. Directory structure overview [belo
          2. Then runs `update-lens-metadata` to update the lens metadata, iff the lens used (per file) appears to have been a manual lens without exif data (the Laowa 10mm)
          3. Then runs `download-tracks-and-geotag-photos`
             1. Which runs `download-tracks`
-               1. Which uses `gaiagps` to download all tracks newly created within the past week and save them as GPF files in `~/Documents/Gaia GPS/Tracks`
+               1. Which uses `gaiagps` to download all tracks newly created within the past week and save them as GPF files in `~/Documents/GPS/Tracks`
             2. Then runs `geotag-photos` which uses `exiftool` to geotag all newly imported photos
          4. Then runs `create-sidecar` which uses `exiftool` to copy all metadat from the RAF photo file to a new xmp sidecar file
       3. Then runs `move-and-rename-newly-imported-photos` which uses `exiftool` to

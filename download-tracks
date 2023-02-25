@@ -2,7 +2,7 @@
 
 function main {
   local -r date_arg="$1"
-  local -r tracks_dir=~/Documents/'Gaia GPS'/Tracks
+  local -r tracks_dir=~/Documents/GPS/Tracks
 
   local -a tracks
 

@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
 
 function main {
-  local -r newly_imported_photos="$1"
+  local -r photos="$1"
   local -r one_week_ago=$(gdate -d '1 week ago' +%Y-%m-%d)
 
   set -x
 
   download-tracks "$one_week_ago:"
-  geotag-photos "$newly_imported_photos"
+  geotag-photos "$photos"
 }
 
 main "$1"

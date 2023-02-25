@@ -4,7 +4,7 @@ function main {
   local -a day_dirs
   local -a geotag_args
   local -r photos_dir="$1"
-  local -r tracks_base_dir=~/Documents/'Gaia GPS'/Tracks/
+  local -r tracks_base_dir=~/Documents/GPS/Tracks/
 
   echo "geotag-photos: Getting dates for photos in '$photos_dir' and its subdirectories..."
 
@@ -24,7 +24,7 @@ function main {
   )
 
   # Turn that list of day directories into -geotag args for passing back to exiftool:
-  #   -geotag /Users/hpg/Documents/Gaia GPS/Tracks/2023/2023-02/2023-02-05/*.gpx
+  #   -geotag /Users/hpg/Documents/GPS/Tracks/2023/2023-02/2023-02-05/*.gpx
   for day_dir in "${day_dirs[@]}"; do
     local tracks_dir="${day_dir/#/$tracks_base_dir}"
 
