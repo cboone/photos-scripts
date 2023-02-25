@@ -11,11 +11,15 @@ function main {
   local -r terms="No reproduction rights are granted without the express written permission of $name. No other usage is expressed or implied."
   local -r url='https://catamounthardware.com'
 
+  set -x
+
   # shellcheck disable=2016
   exiftool \
     -ignoreMinorErrors \
     -overwrite_original_in_place \
     -v2 \
+    -recurse \
+    -use MWG \
     -Copyright="$name" \
     -Creator="$name" \
     -CreatorWorkEmail="$email" \
@@ -24,10 +28,11 @@ function main {
     -Rights="$rights" \
     -UsageTerms="$terms" \
     -WebStatement="$url" \
-    -XMP-xmpRights:Marked='True' \
+    -XMP-iptcExt:DigitalSourceType="$digital_source_type" \
+    -XMP-photoshop:Credit="$name" \
     -XMP-plus:ImageCreatorName="$name" \
     -XMP-plus:CopyrightOwnerName="$name" \
-    -XMP-iptcExt:DigitalSourceType="$digital_source_type" \
+    -XMP-xmpRights:Marked='True' \
     "$directory"
 }
 
